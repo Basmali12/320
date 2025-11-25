@@ -3,71 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شات أبو أمير (دخول جوجل)</title>
+    <title>شات أبو أمير (تصميم نهائي)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- التصميم الأساسي (لم يتغير) --- */
-        body { font-family: 'Segoe UI', sans-serif; background: #d1d7db; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        /* --- الأساسيات والتصميم العام --- */
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: #d1d7db; 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh;
+            background: linear-gradient(135deg, #161e2f 0%, #080d19 100%); 
+        }
         .app-container { width: 100%; max-width: 600px; height: 100vh; background: #fff; display: flex; flex-direction: column; position: relative; }
-        .chat-header { background-color: #008069; color: white; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10; }
-        .room-info { font-size: 12px; opacity: 0.9; }
-        .logout-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; }
-        .messages-area { flex: 1; padding: 20px; overflow-y: auto; background-color: #e5ddd5; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); display: flex; flex-direction: column; gap: 10px; }
-        .message { padding: 8px 12px; border-radius: 8px; max-width: 80%; font-size: 14px; position: relative; word-wrap: break-word; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
-        .message.mine { align-self: flex-end; background-color: #dcf8c6; border-radius: 8px 0 8px 8px; }
-        .message.others { align-self: flex-start; background-color: #fff; border-radius: 0 8px 8px 8px; }
-        .msg-img { max-width: 100%; border-radius: 5px; margin-top: 5px; display: block; cursor: pointer; }
-        audio { height: 35px; width: 220px; margin-top: 5px; border-radius: 20px; }
-        .sender-name { font-size: 11px; color: #d35400; font-weight: bold; display: block; margin-bottom: 2px; }
-        .msg-time { font-size: 9px; color: gray; display: block; text-align: left; margin-top: 4px; }
-        .input-area { padding: 8px; background: #f0f2f5; display: flex; align-items: center; gap: 8px; }
-        input[type="text"] { flex: 1; padding: 12px; border-radius: 25px; border: none; outline: none; font-size: 15px; }
-        .icon-btn { background: none; border: none; font-size: 1.4rem; color: #54656f; cursor: pointer; padding: 5px; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
-        .icon-btn:hover { color: #008069; transform: scale(1.1); }
-        .recording { color: red !important; animation: pulse 1s infinite; }
-        .success-message { color: green; font-size: 14px; margin-top: 10px; font-weight: bold; }
-
-        /* --- تصميم نافذة الدخول الداكنة (Dark Modal) --- */
-        .modal { background: #1e293b; /* خلفية داكنة */ }
-        .modal-box { 
-            background: #2a3547; /* لون أفتح قليلاً للصندوق */
-            color: #f3f3f3; /* نص فاتح */
-            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
-            border-radius: 12px;
-        }
-        .modal-box input {
-            background: #374151; /* حقول داكنة */
-            color: white;
-            border: 1px solid #4b5563;
-        }
-        .modal-box p { color: #9ca3af; }
-        .modal-box button { background: #00a884; font-weight: bold; } /* زر رئيسي أخضر */
-        .modal-box .secondary-btn { background: #4b5563; } /* زر ثانوي رمادي */
-        .modal-box .google-btn { 
-            background: white; 
-            color: #333; 
-            border: 1px solid #ccc;
-            margin-top: 20px;
-            padding: 10px 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-box .google-btn i { font-size: 1.2rem; margin-left: 10px; color: #db4437; /* لون جوجل الأحمر */ }
-
-        .error-message { color: #f87171; font-weight: bold; } 
         
-        /* حالة الإشعار بعد التسجيل */
-        .pending-verification {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            text-align: center;
+        /* [تصميم الهيدر والرسائل] */
+        .chat-header { background-color: #008069; color: white; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10; }
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        .profile-btn { background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem; }
+        .messages-area { flex: 1; padding: 20px; overflow-y: auto; background-color: #e5ddd5; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); display: flex; flex-direction: column; gap: 10px; }
+        .message.mine { align-self: flex-end; background-color: #dcf8c6; border-radius: 8px 0 8px 8px; }
+        .sender-name { font-size: 11px; color: #d35400; font-weight: bold; display: block; margin-bottom: 2px; }
+        .error-message { color: #ff5555; font-weight: bold; }
+
+        /* --- تصميم نافذة الدخول (Glass Modal) --- */
+        .modal { background: rgba(0,0,0,0.5); }
+        .modal-box { 
+            background: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border-radius: 20px;
+            color: #f3f3f3;
+            padding: 40px 30px;
         }
-        .pending-verification h3 { margin-top: 20px; color: #34d399; }
-        .pending-verification i { font-size: 4rem; color: #34d399; }
+        .modal-box .title { font-size: 28px; color: #ffcc00; margin-bottom: 5px; } 
+
+        .input-group { position: relative; margin-bottom: 15px; }
+        .modal-box input {
+            width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #4b5563;
+            background: rgba(255, 255, 255, 0.05); color: white; box-sizing: border-box; font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .modal-box input:focus { border-color: #ffcc00; outline: none; } 
+
+        .action-buttons { display: flex; gap: 10px; margin-top: 20px; }
+        .action-buttons button {
+            flex: 1; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+        }
+        .login-btn { background: #34d399; color: #1e293b; } 
+        .register-btn { background: #4b5563; color: white; } 
+
+        .google-btn { 
+            background: #ffffff; color: #333; border: none; padding: 12px; margin-top: 15px;
+            border-radius: 10px; font-weight: bold; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); transition: transform 0.2s;
+        }
+        .google-btn i { font-size: 1.2rem; margin-left: 10px; color: #db4437; } 
+        .pending-verification { color: white; }
+        .pending-verification i { color: #34d399; }
+
+        /* --- تصميم نافذة الملف الشخصي --- */
+        .modal-profile {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.7); z-index: 9999; /* z-index عالي جداً */
+            justify-content: center; align-items: center;
+        }
+        .profile-box {
+            background: #2a3547; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; color: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        .profile-box h3 { color: #34d399; margin-bottom: 20px; }
+        .profile-box input { background: #374151; color: white; border: 1px solid #4b5563; }
+        .profile-box .save-btn { background: #00a884; }
     </style>
 </head>
 <body>
@@ -75,20 +86,22 @@
     <div class="modal" id="loginModal">
         <div class="modal-box">
             <div id="authContent">
-                <div style="font-size: 24px; font-weight: bold; margin-bottom: 15px;">🔑 تسجيل الدخول</div>
-
+                <div class="title" style="text-align: center;">🔑 تسجيل الدخول</div>
+                <p class="subtitle" style="text-align: center;">الرجاء استخدام البريد أو حساب جوجل</p>
+                
                 <button class="google-btn" onclick="signInWithGoogle()"><i class="fa-brands fa-google"></i> الدخول عبر جوجل</button>
                 
-                <hr style="border-top: 1px solid #4b5563; margin: 20px 0;">
+                <hr style="border-top: 1px solid rgba(255,255,255,0.1); margin: 25px 0 15px;">
 
-                <p style="margin-bottom: 15px;">أو استخدم بريدك وكلمة المرور</p>
-                <input type="text" id="emailInput" placeholder="البريد الإلكتروني">
-                <input type="password" id="passwordInput" placeholder="كلمة المرور (6 أحرف أو أكثر)">
+                <div class="input-group"><input type="text" id="emailInput" placeholder="البريد الإلكتروني"></div>
+                <div class="input-group"><input type="password" id="passwordInput" placeholder="كلمة المرور"></div>
                 
                 <p class="error-message" id="authError"></p>
 
-                <button onclick="loginUser()">دخول للدردشة</button>
-                <button class="secondary-btn" onclick="registerUser()">تسجيل حساب جديد</button>
+                <div class="action-buttons">
+                    <button class="login-btn" onclick="loginUser()">دخول للدردشة</button>
+                    <button class="register-btn" onclick="registerUser()">تسجيل حساب جديد</button>
+                </div>
             </div>
 
             <div id="verificationPending" style="display: none;" class="pending-verification">
@@ -96,26 +109,39 @@
                 <h3>تم التسجيل بنجاح!</h3>
                 <p>تم إرسال **رابط التفعيل** إلى بريدك الإلكتروني.</p>
                 <p style="font-size: 14px; margin-top: 15px;">الرجاء الضغط على الرابط في بريدك (الجيميل) ثم **العودة لتسجيل الدخول**.</p>
-                <button style="margin-top: 30px;" onclick="auth.signOut()">العودة لصفحة الدخول</button>
+                <button style="margin-top: 30px; background: #34d399; color: #1e293b; padding: 10px; border-radius: 10px;" onclick="auth.signOut()">العودة لصفحة الدخول</button>
             </div>
         </div>
     </div>
 
-    <div class="lightbox" id="lightbox" onclick="this.style.display='none'">
-        <img id="lightboxImg" src="">
-    </div>
+    <div class="modal-profile" id="profileModal">
+        <div class="profile-box">
+            <h3>الملف الشخصي 👤</h3>
+            <label for="profileDisplayName">اسم المستخدم (الذي يظهر في الدردشة):</label>
+            <input type="text" id="profileDisplayName" placeholder="أدخل اسمك">
+            
+            <label for="profileEmail">البريد الإلكتروني:</label>
+            <input type="text" id="profileEmail" disabled>
 
+            <p class="error-message" id="profileError"></p>
+            
+            <button class="save-btn" onclick="updateDisplayName()">حفظ الاسم</button>
+            <button class="secondary-btn" style="margin-top: 5px;" onclick="document.getElementById('profileModal').style.display='none'">إغلاق</button>
+        </div>
+    </div>
+    
     <div class="app-container" style="display: none;">
         <div class="chat-header">
-            <div>
+            <div class="header-content">
                 <div style="font-weight: bold;">شات أبو أمير</div>
                 <div class="room-info" id="headerRoomName">الغرفة الرئيسية</div>
             </div>
-            <button class="logout-btn" onclick="logoutUser()"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
+            <div class="header-actions">
+                <button class="profile-btn" onclick="showProfileModal()"><i class="fa-solid fa-user"></i></button>
+                <button class="logout-btn" onclick="logoutUser()"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
+            </div>
         </div>
-
         <div class="messages-area" id="messagesList"></div>
-
         <div class="input-area">
             <input type="file" id="imgInput" accept="image/*" style="display: none;" onchange="handleImageSelect()">
             <button class="icon-btn" onclick="document.getElementById('imgInput').click()"><i class="fa-solid fa-camera"></i></button>
@@ -154,15 +180,63 @@
             document.getElementById('authError').innerText = message;
         }
         
-        // --- 1. المصادقة وتتبع حالة الدخول ---
+        // --- وظائف الملف الشخصي (Profile Functions) ---
+        
+        function showProfileModal() {
+            const user = auth.currentUser;
+            document.getElementById('profileEmail').value = user.email;
+            document.getElementById('profileDisplayName').value = user.displayName || user.email.split('@')[0];
+            document.getElementById('profileModal').style.display = 'flex';
+            document.getElementById('profileError').innerText = '';
+        }
+        
+        function updateDisplayName() {
+            const newName = document.getElementById('profileDisplayName').value.trim();
+            const profileError = document.getElementById('profileError');
+
+            if (!newName) {
+                profileError.innerText = "الرجاء إدخال اسم صحيح.";
+                return;
+            }
+
+            const user = auth.currentUser;
+            user.updateProfile({ displayName: newName })
+                .then(() => {
+                    profileError.innerText = "تم حفظ الاسم بنجاح! سيتم تحديث الشات.";
+                    myName = newName; 
+                    loadMessages(); 
+                    setTimeout(() => { document.getElementById('profileModal').style.display='none'; }, 1500);
+                })
+                .catch((error) => {
+                    profileError.innerText = "فشل الحفظ: " + error.message;
+                });
+        }
+        
+        // --- 1. الدخول عبر جوجل ---
+        function signInWithGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider)
+                .catch((error) => {
+                    if (error.code === 'auth/popup-closed-by-user') {
+                        showError("تم إلغاء عملية الدخول من قبل المستخدم.");
+                    } else if (error.code === 'auth/cancelled-popup-request') {
+                         showError("الرجاء المحاولة مرة واحدة فقط.");
+                    } else if (error.code === 'auth/unauthorized-domain') {
+                         showError("خطأ أمني: يجب إضافة نطاق الموقع (basmali12.github.io) في إعدادات Firebase.");
+                    } else {
+                        showError("فشل الدخول عبر جوجل: " + error.message);
+                    }
+                });
+        }
+
+
+        // --- 2. المصادقة وتتبع حالة الدخول ---
         auth.onAuthStateChanged(user => {
             const appContainer = document.querySelector('.app-container');
             const loginModal = document.getElementById("loginModal");
 
             if (user) {
-                // ملاحظة: Google Sign-In تتحقق من البريد تلقائياً، لذا نمرر هذا الشرط
                 if (user.providerData[0].providerId === 'password' && !user.emailVerified) {
-                    // إذا كان مسجل دخول بالبريد وكلمة السر ولكنه غير مفعل
                     document.getElementById('authContent').style.display = 'none';
                     document.getElementById('verificationPending').style.display = 'flex';
                     appContainer.style.display = "none";
@@ -171,8 +245,8 @@
                     return;
                 }
                 
-                // يتم استخدام Display Name من جوجل إن وجد، أو البريد كاسم
-                myName = user.displayName || user.email; 
+                myName = user.displayName || user.email.split('@')[0]; 
+                
                 startApp();
                 loginModal.style.display = "none";
                 appContainer.style.display = "flex";
@@ -185,35 +259,18 @@
             }
         });
 
-        // --- 2. الدخول عبر جوجل (جديد) ---
-        function signInWithGoogle() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider)
-                .catch((error) => {
-                    if (error.code === 'auth/popup-closed-by-user') {
-                        showError("تم إلغاء عملية الدخول من قبل المستخدم.");
-                    } else if (error.code === 'auth/cancelled-popup-request') {
-                         // يحدث هذا إذا فتح المستخدم النافذة أكثر من مرة
-                         showError("الرجاء المحاولة مرة واحدة فقط.");
-                    } else {
-                        showError("فشل الدخول عبر جوجل: " + error.message);
-                    }
-                });
-        }
-
 
         // --- 3. دالة تسجيل الدخول (بريد/كلمة سر) ---
         function loginUser() {
             const emailIn = document.getElementById("emailInput").value.trim();
             const passwordIn = document.getElementById("passwordInput").value;
 
-            if (!emailIn || !passwordIn) { return showError("الرجاء ملء جميع الحقول."); }
+            if (!emailIn || !passwordIn) { return showError("الرجاء ملء جميع حقول البريد وكلمة المرور."); }
 
             auth.signInWithEmailAndPassword(emailIn, passwordIn)
                 .catch((error) => {
-                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                        showError("البريد الإلكتروني أو كلمة المرور غير صحيحة.");
-                    } else { showError("فشل في تسجيل الدخول: " + error.message); }
+                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') { showError("البريد الإلكتروني أو كلمة المرور غير صحيحة."); } 
+                    else { showError("فشل في تسجيل الدخول: " + error.message); }
                 });
         }
 
@@ -235,24 +292,12 @@
                         });
                 })
                 .catch((error) => {
-                    if (error.code === 'auth/email-already-in-use') { showError("هذا البريد الإلكتروني مسجل بالفعل. حاول تسجيل الدخول."); } 
+                    if (error.code === 'auth/email-already-in-use') { showError("هذا البريد الإلكتروني مسجل بالفعل. حاول تسجيل الدخول."); }
                     else { showError("فشل في التسجيل: " + error.message); }
                 });
         }
 
-        // --- 5. دالة تسجيل الخروج ---
-        function logoutUser() {
-            if(confirm("هل أنت متأكد من الخروج؟")) {
-                auth.signOut(); 
-            }
-        }
-        
-        // --- 6. وظائف التشغيل الأساسية (لم تتغير) ---
-        function startApp() {
-            document.getElementById("headerRoomName").innerText = `الغرفة: MainRoom`; 
-            cleanOldMessages();
-            loadMessages();
-        }
+        // --- 5. باقي الوظائف (الحذف/التحميل/الوسائط) ---
 
         function cleanOldMessages() {
             const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000); 
@@ -273,16 +318,18 @@
                   snapshot.forEach((doc) => {
                       const msg = doc.data();
                       const div = document.createElement("div");
-                      const isMine = msg.sender === myName || msg.sender === auth.currentUser.email; // فحص إضافي
+                      const isMine = msg.sender === myName || msg.sender === auth.currentUser.email;
                       
                       let content = "";
                       if (msg.type === 'image') { content = `<img src="${msg.content}" class="msg-img" onclick="showImage(this.src)">`; } 
                       else if (msg.type === 'audio') { content = `<audio controls src="${msg.content}"></audio>`; } 
                       else { content = msg.content; }
 
+                      const senderDisplayName = msg.sender;
+
                       div.className = `message ${isMine ? 'mine' : 'others'}`;
                       div.innerHTML = `
-                        ${!isMine ? `<span class="sender-name">${msg.sender.split('@')[0]}</span>` : ''}
+                        ${!isMine ? `<span class="sender-name">${senderDisplayName}</span>` : ''}
                         ${content}
                         <span class="msg-time">${msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '...'}</span>
                       `;
