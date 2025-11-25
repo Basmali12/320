@@ -6,100 +6,68 @@
     <title>شات أبو أمير (النسخة النهائية)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- التصميم الأساسي (لم يتغير) --- */
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            background: #d1d7db; 
-            margin: 0; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh;
-            background: linear-gradient(135deg, #161e2f 0%, #080d19 100%); 
+        body{
+            font-family:'Segoe UI',sans-serif;
+            margin:0;
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:linear-gradient(135deg,#161e2f 0%,#080d19 100%);
         }
-        .app-container { width: 100%; max-width: 600px; height: 100vh; background: #fff; display: flex; flex-direction: column; position: relative; }
-        
-        .chat-header { background-color: #008069; color: white; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10; }
-        .header-actions { display: flex; align-items: center; gap: 15px; }
-        .profile-btn { background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem; }
-        .messages-area { flex: 1; padding: 20px; overflow-y: auto; background-color: #e5ddd5; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); display: flex; flex-direction: column; gap: 10px; }
-        .message.mine { align-self: flex-end; background-color: #dcf8c6; border-radius: 8px 0 8 8px; }
-        .sender-name { font-size: 11px; color: #d35400; font-weight: bold; display: block; margin-bottom: 2px; }
-        .error-message { color: #ff5555; font-weight: bold; }
-
-        /* --- تصميم نافذة الدخول (Glass Modal) --- */
-        .modal { 
-            position: fixed;
-            inset: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: rgba(0,0,0,0.5); 
-            z-index: 9998;
+        .app-container{
+            width:100%;
+            max-width:600px;
+            height:100vh;
+            background:#fff;
+            display:flex;
+            flex-direction:column;
         }
-        .modal-box { 
-            background: rgba(255, 255, 255, 0.1); 
-            backdrop-filter: blur(10px); 
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            border-radius: 20px;
-            color: #f3f3f3;
-            padding: 40px 30px;
-            width: 90%;
-            max-width: 400px;
+        .chat-header{
+            background:#008069;
+            color:#fff;
+            padding:10px 15px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
         }
-        .modal-box .title { font-size: 28px; color: #ffcc00; margin-bottom: 5px; } 
-
-        .input-group { position: relative; margin-bottom: 15px; }
-        .modal-box input {
-            width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #4b5563;
-            background: rgba(255, 255, 255, 0.05); color: white; box-sizing: border-box; font-size: 16px;
-            transition: border-color 0.3s;
+        .messages-area{
+            flex:1;
+            padding:20px;
+            overflow-y:auto;
+            background:#e5ddd5;
+            background-image:url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+            display:flex;
+            flex-direction:column;
+            gap:10px;
         }
-        .modal-box input:focus { border-color: #ffcc00; outline: none; } 
-
-        .action-buttons { display: flex; gap: 10px; margin-top: 20px; }
-        .action-buttons button {
-            flex: 1; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer;
-            transition: transform 0.2s, background 0.3s;
+        .message{
+            padding:8px 10px;
+            border-radius:10px;
+            max-width:80%;
         }
-        .login-btn { background: #34d399; color: #1e293b; } 
-        .register-btn { background: #4b5563; color: white; } 
-
-        .google-btn { 
-            background: #ffffff; color: #333; border: none; padding: 12px; margin-top: 15px;
-            border-radius: 10px; font-weight: bold; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); transition: transform 0.2s;
+        .message.mine{
+            align-self:flex-end;
+            background:#dcf8c6;
         }
-        .google-btn i { font-size: 1.2rem; margin-left: 10px; color: #db4437; } 
-        .pending-verification { color: white; text-align: center; }
-        .pending-verification i { color: #34d399; font-size: 40px; margin-bottom: 10px; }
-
-        /* --- تصميم نافذة الملف الشخصي --- */
-        .modal-profile {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.7); z-index: 9999; 
-            justify-content: center; align-items: center;
+        .message.others{
+            align-self:flex-start;
+            background:#fff;
         }
-        .profile-box {
-            background: #2a3547; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; color: white;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        .sender-name{
+            font-size:11px;
+            color:#d35400;
+            font-weight:bold;
+            display:block;
+            margin-bottom:2px;
         }
-        .profile-box h3 { color: #34d399; margin-bottom: 20px; }
-        .profile-box input { 
-            width: 100%;
-            margin-bottom: 10px;
-            padding: 10px;
-            background: #374151; 
-            color: white; 
-            border: 1px solid #4b5563; 
-            border-radius: 8px;
-            box-sizing: border-box;
+        .msg-time{
+            font-size:10px;
+            color:#555;
+            display:block;
+            margin-top:3px;
         }
-        .profile-box .save-btn { background: #00a884; color: #fff; border: none; padding: 10px; border-radius: 8px; width: 100%; cursor: pointer; }
-        .secondary-btn { background:#4b5563;color:#fff;border:none;padding:10px;border-radius:8px;width:100%;cursor:pointer; }
-
-        .input-area {
+        .input-area{
             display:flex;
             align-items:center;
             padding:10px;
@@ -107,36 +75,175 @@
             border-top:1px solid #ddd;
             background:#f5f5f5;
         }
-        .input-area input[type="text"] {
+        .input-area input[type=text]{
             flex:1;
             padding:8px 10px;
             border-radius:20px;
             border:1px solid #ccc;
         }
-        .icon-btn {
+        .icon-btn{
             border:none;
             background:transparent;
             cursor:pointer;
             font-size:18px;
         }
+
+        /* مودال تسجيل الدخول */
+        .modal{
+            position:fixed;
+            inset:0;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:rgba(0,0,0,0.5);
+            z-index:9998;
+        }
+        .modal-box{
+            background:rgba(255,255,255,0.1);
+            backdrop-filter:blur(10px);
+            border:1px solid rgba(255,255,255,0.2);
+            box-shadow:0 8px 32px rgba(0,0,0,0.37);
+            border-radius:20px;
+            color:#f3f3f3;
+            padding:40px 30px;
+            width:90%;
+            max-width:400px;
+        }
+        .modal-box .title{
+            font-size:28px;
+            color:#ffcc00;
+            margin-bottom:5px;
+            text-align:center;
+        }
+        .input-group{margin-bottom:15px;}
+        .modal-box input{
+            width:100%;
+            padding:12px;
+            border-radius:10px;
+            border:1px solid #4b5563;
+            background:rgba(255,255,255,0.05);
+            color:#fff;
+            box-sizing:border-box;
+        }
+        .modal-box input:focus{
+            outline:none;
+            border-color:#ffcc00;
+        }
+        .action-buttons{
+            display:flex;
+            gap:10px;
+            margin-top:20px;
+        }
+        .action-buttons button{
+            flex:1;
+            padding:12px;
+            border-radius:10px;
+            border:none;
+            cursor:pointer;
+            font-weight:bold;
+        }
+        .login-btn{background:#34d399;color:#1e293b;}
+        .register-btn{background:#4b5563;color:#fff;}
+        .google-btn{
+            background:#fff;
+            color:#333;
+            border:none;
+            padding:12px;
+            margin-top:15px;
+            border-radius:10px;
+            font-weight:bold;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            box-shadow:0 4px 6px rgba(0,0,0,0.1);
+        }
+        .google-btn i{
+            margin-left:8px;
+            color:#db4437;
+        }
+        .error-message{
+            color:#ff5555;
+            font-weight:bold;
+            min-height:18px;
+            font-size:13px;
+        }
+
+        .pending-verification{
+            color:#fff;
+            text-align:center;
+        }
+        .pending-verification i{
+            font-size:40px;
+            color:#34d399;
+            margin-bottom:10px;
+        }
+
+        /* مودال البروفايل */
+        .modal-profile{
+            display:none;
+            position:fixed;
+            inset:0;
+            background:rgba(0,0,0,0.7);
+            z-index:9999;
+            justify-content:center;
+            align-items:center;
+        }
+        .profile-box{
+            background:#2a3547;
+            padding:30px;
+            border-radius:10px;
+            width:90%;
+            max-width:400px;
+            color:#fff;
+        }
+        .profile-box h3{
+            color:#34d399;
+            margin-bottom:20px;
+        }
+        .profile-box input{
+            width:100%;
+            margin-bottom:10px;
+            padding:10px;
+            background:#374151;
+            border-radius:8px;
+            border:1px solid #4b5563;
+            color:#fff;
+            box-sizing:border-box;
+        }
+        .save-btn,.secondary-btn{
+            width:100%;
+            padding:10px;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            margin-top:5px;
+        }
+        .save-btn{background:#00a884;color:#fff;}
+        .secondary-btn{background:#4b5563;color:#fff;}
     </style>
 </head>
 <body>
 
-    <!-- نافذة تسجيل الدخول / التسجيل -->
+    <!-- مودال تسجيل الدخول -->
     <div class="modal" id="loginModal">
         <div class="modal-box">
             <div id="authContent">
-                <div class="title" style="text-align: center;">🔑 تسجيل الدخول</div>
-                <p class="subtitle" style="text-align: center;">الرجاء استخدام البريد أو حساب جوجل</p>
-                
-                <button class="google-btn" onclick="signInWithGoogle()"><i class="fa-brands fa-google"></i> الدخول عبر جوجل</button>
-                
-                <hr style="border-top: 1px solid rgba(255,255,255,0.1); margin: 25px 0 15px;">
+                <div class="title">🔑 تسجيل الدخول</div>
+                <p style="text-align:center;">الرجاء استخدام البريد أو حساب جوجل</p>
 
-                <div class="input-group"><input type="text" id="emailInput" placeholder="البريد الإلكتروني"></div>
-                <div class="input-group"><input type="password" id="passwordInput" placeholder="كلمة المرور"></div>
-                
+                <button class="google-btn" onclick="signInWithGoogle()">
+                    <i class="fa-brands fa-google"></i> الدخول عبر جوجل
+                </button>
+
+                <hr style="border-top:1px solid rgba(255,255,255,0.1);margin:25px 0 15px;">
+
+                <div class="input-group">
+                    <input type="text" id="emailInput" placeholder="البريد الإلكتروني">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="passwordInput" placeholder="كلمة المرور">
+                </div>
+
                 <p class="error-message" id="authError"></p>
 
                 <div class="action-buttons">
@@ -145,64 +252,76 @@
                 </div>
             </div>
 
-            <div id="verificationPending" style="display: none;" class="pending-verification">
+            <div id="verificationPending" style="display:none;" class="pending-verification">
                 <i class="fa-solid fa-envelope-circle-check"></i>
                 <h3>تم التسجيل بنجاح!</h3>
                 <p>تم إرسال رابط التفعيل إلى بريدك الإلكتروني.</p>
-                <p style="font-size: 14px; margin-top: 15px;">الرجاء الضغط على الرابط في بريدك (الجيميل) ثم العودة لتسجيل الدخول.</p>
-                <button style="margin-top: 30px; background: #34d399; color: #1e293b; padding: 10px; border-radius: 10px; border:none; cursor:pointer;" onclick="auth.signOut()">العودة لصفحة الدخول</button>
+                <p style="font-size:14px;margin-top:15px;">افتح بريدك (Gmail) واضغط على رابط التفعيل ثم ارجع وسجّل دخول.</p>
+                <button style="margin-top:20px;background:#34d399;color:#1e293b;padding:10px 15px;border-radius:10px;border:none;cursor:pointer;"
+                        onclick="auth.signOut()">
+                    العودة لصفحة الدخول
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- نافذة الملف الشخصي -->
+    <!-- مودال البروفايل -->
     <div class="modal-profile" id="profileModal">
         <div class="profile-box">
             <h3>الملف الشخصي 👤</h3>
-            <label for="profileDisplayName">اسم المستخدم (الذي يظهر في الدردشة):</label>
+            <label>اسم المستخدم الذي يظهر في الدردشة:</label>
             <input type="text" id="profileDisplayName" placeholder="أدخل اسمك">
-            
-            <label for="profileEmail">البريد الإلكتروني:</label>
+            <label>البريد الإلكتروني:</label>
             <input type="text" id="profileEmail" disabled>
-
             <p class="error-message" id="profileError"></p>
-            
             <button class="save-btn" onclick="updateDisplayName()">حفظ الاسم</button>
-            <button class="secondary-btn" style="margin-top: 5px;" onclick="document.getElementById('profileModal').style.display='none'">إغلاق</button>
-        </div>
-    </div>
-    
-    <!-- واجهة التطبيق -->
-    <div class="app-container" style="display: none;">
-        <div class="chat-header">
-            <div class="header-content">
-                <div style="font-weight: bold;">شات أبو أمير</div>
-                <div class="room-info" id="headerRoomName">الغرفة الرئيسية</div>
-            </div>
-            <div class="header-actions">
-                <button class="profile-btn" onclick="showProfileModal()"><i class="fa-solid fa-user"></i></button>
-                <button class="logout-btn" onclick="logoutUser()" style="background:none;border:none;color:white;cursor:pointer;"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
-            </div>
-        </div>
-        <div class="messages-area" id="messagesList"></div>
-        <div class="input-area">
-            <input type="file" id="imgInput" accept="image/*" style="display: none;" onchange="handleImageSelect()">
-            <button class="icon-btn" onclick="document.getElementById('imgInput').click()"><i class="fa-solid fa-camera"></i></button>
-            <button class="icon-btn" id="micBtn" onclick="toggleRecording()"><i class="fa-solid fa-microphone"></i></button>
-            <input type="text" id="msgInput" placeholder="اكتب رسالة..." autocomplete="off">
-            <button class="icon-btn" id="sendBtn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane" style="color: #008069;"></i></button>
+            <button class="secondary-btn" onclick="document.getElementById('profileModal').style.display='none'">إغلاق</button>
         </div>
     </div>
 
-    <!-- Firebase -->
+    <!-- التطبيق -->
+    <div class="app-container" style="display:none;">
+        <div class="chat-header">
+            <div>
+                <div style="font-weight:bold;">شات أبو أمير</div>
+                <div id="headerRoomName" style="font-size:13px;">الغرفة الرئيسية</div>
+            </div>
+            <div>
+                <button class="icon-btn" style="color:#fff;margin-left:10px;" onclick="showProfileModal()">
+                    <i class="fa-solid fa-user"></i>
+                </button>
+                <button class="icon-btn" style="color:#fff;" onclick="logoutUser()">
+                    <i class="fa-solid fa-right-from-bracket"></i> خروج
+                </button>
+            </div>
+        </div>
+
+        <div class="messages-area" id="messagesList"></div>
+
+        <div class="input-area">
+            <input type="file" id="imgInput" accept="image/*" style="display:none;" onchange="handleImageSelect()">
+            <button class="icon-btn" onclick="document.getElementById('imgInput').click()">
+                <i class="fa-solid fa-camera"></i>
+            </button>
+            <button class="icon-btn" id="micBtn" onclick="toggleRecording()">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
+            <input type="text" id="msgInput" placeholder="اكتب رسالة..." autocomplete="off">
+            <button class="icon-btn" onclick="sendMessage()">
+                <i class="fa-solid fa-paper-plane" style="color:#008069;"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Firebase compat SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <script>
-        // --- إعدادات Firebase الخاصة بك ---
+        // إعداد Firebase (نفس الإعدادات من مشروعك)
         const firebaseConfig = {
-            apiKey: "AIzaSyBPapPdivEQO1UPqQdCRTBI6ct8KZDtqyw", 
+            apiKey: "AIzaSyBPapPdivEQO1UPqQdCRTBI6ct8KZDtqyw",
             authDomain: "sjfie-bed64.firebaseapp.com",
             projectId: "sjfie-bed64",
             storageBucket: "sjfie-bed64.firebasestorage.app",
@@ -211,299 +330,269 @@
         };
 
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth(); 
+        const auth = firebase.auth();
+        const db   = firebase.firestore();
 
         let myName = "";
-        const defaultRoom = "MainRoom"; 
-        let mediaRecorder;
-        let audioChunks = [];
-        let isRecording = false;
+        const defaultRoom = "MainRoom";
+        let mediaRecorder, audioChunks = [], isRecording = false;
 
-        function showError(message) {
-            document.getElementById('authError').innerText = message;
+        function showError(msg){
+            document.getElementById('authError').innerText = msg || "";
         }
-        
-        // --- 1. وظائف الملف الشخصي ---
-        function showProfileModal() {
+
+        // مودال البروفايل
+        function showProfileModal(){
             const user = auth.currentUser;
-            if (!user) return;
-            document.getElementById('profileEmail').value = user.email;
-            document.getElementById('profileDisplayName').value = user.displayName || user.email.split('@')[0];
+            if(!user) return;
+            document.getElementById('profileEmail').value = user.email || "";
+            document.getElementById('profileDisplayName').value =
+                user.displayName || (user.email ? user.email.split('@')[0] : "مستخدم");
+            document.getElementById('profileError').innerText = "";
             document.getElementById('profileModal').style.display = 'flex';
-            document.getElementById('profileError').innerText = '';
         }
-        
-        function updateDisplayName() {
+
+        function updateDisplayName(){
             const newName = document.getElementById('profileDisplayName').value.trim();
             const profileError = document.getElementById('profileError');
-
-            if (!newName) {
+            if(!newName){
                 profileError.innerText = "الرجاء إدخال اسم صحيح.";
                 return;
             }
-
             const user = auth.currentUser;
-            if (!user) {
-                profileError.innerText = "لم يتم العثور على مستخدم مسجّل دخول.";
+            if(!user){
+                profileError.innerText = "لا يوجد مستخدم مسجّل دخول.";
                 return;
             }
-
-            user.updateProfile({ displayName: newName })
-                .then(() => {
-                    profileError.innerText = "تم حفظ الاسم بنجاح! سيتم تحديث الشات.";
-                    myName = newName; 
-                    loadMessages(); 
-                    setTimeout(() => { document.getElementById('profileModal').style.display='none'; }, 1500);
+            user.updateProfile({displayName:newName})
+                .then(()=>{
+                    myName = newName;
+                    profileError.innerText = "تم حفظ الاسم بنجاح.";
+                    setTimeout(()=>{document.getElementById('profileModal').style.display='none';},1200);
                 })
-                .catch((error) => {
-                    profileError.innerText = "فشل الحفظ: " + error.message;
-                });
+                .catch(e=>profileError.innerText="فشل الحفظ: "+e.message);
         }
-        
-        // --- 2. الدخول عبر جوجل ---
-        function signInWithGoogle() {
+
+        // تسجيل الدخول بجوجل باستخدام redirect (أنسب للجوال)
+        function signInWithGoogle(){
+            showError("");
+            firebase.auth().useDeviceLanguage();
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider)
-                .catch((error) => {
-                    if (error.code === 'auth/account-exists-with-different-credential') {
-                        showError("هذا البريد الإلكتروني مسجل مسبقاً. الرجاء استخدام طريقة التسجيل الأصلية (البريد وكلمة السر).");
-                    }
-                    else if (error.code === 'auth/popup-closed-by-user') {
-                        showError("تم إلغاء عملية الدخول من قبل المستخدم.");
-                    } else if (error.code === 'auth/cancelled-popup-request') {
-                        showError("الرجاء المحاولة مرة واحدة فقط.");
-                    } else if (error.code === 'auth/unauthorized-domain') {
-                        showError("خطأ أمني: يجب إضافة نطاق الموقع في إعدادات Firebase.");
-                    } else {
-                        showError("فشل الدخول عبر جوجل: " + error.message);
-                    }
-                });
+            auth.signInWithRedirect(provider);
         }
 
-        // --- 3. المصادقة وتتبع حالة الدخول ---
-        auth.onAuthStateChanged(user => {
+        // إذا رجعنا من جوجل بعد redirect نلتقط النتيجة (للأخطاء فقط)
+        auth.getRedirectResult()
+            .then((result)=>{
+                if(result.user){
+                    console.log("Google login:", result.user.email);
+                }
+            })
+            .catch((error)=>{
+                console.log("Google Redirect Error:", error);
+                showError("فشل الدخول عبر جوجل: " + error.message);
+            });
+
+        // مراقبة حالة المستخدم
+        auth.onAuthStateChanged(user=>{
             const appContainer = document.querySelector('.app-container');
-            const loginModal = document.getElementById("loginModal");
+            const loginModal   = document.getElementById('loginModal');
 
-            if (user) {
-                const isEmailPassword = user.providerData.some(p => p.providerId === 'password');
-
-                // إذا مسجل عن طريق الإيميل/باسوررد ولا زال غير مفعل
-                if (isEmailPassword && !user.emailVerified) {
-                    document.getElementById('authContent').style.display = 'none';
-                    document.getElementById('verificationPending').style.display = 'flex';
-                    appContainer.style.display = "none";
-                    loginModal.style.display = "flex";
-                    // لا نسوي signOut هنا حتى ما يتلخبط
+            if(user){
+                const isEmailPassword = user.providerData.some(p=>p.providerId === 'password');
+                if(isEmailPassword && !user.emailVerified){
+                    document.getElementById('authContent').style.display='none';
+                    document.getElementById('verificationPending').style.display='flex';
+                    appContainer.style.display='none';
+                    loginModal.style.display='flex';
                     return;
                 }
-                
+
                 myName = user.displayName || (user.email ? user.email.split('@')[0] : "مستخدم");
 
                 startApp();
-                loginModal.style.display = "none";
-                appContainer.style.display = "flex";
-            } else {
-                document.getElementById('authContent').style.display = 'block';
-                document.getElementById('verificationPending').style.display = 'none';
-                loginModal.style.display = "flex";
-                appContainer.style.display = "none";
+                loginModal.style.display='none';
+                appContainer.style.display='flex';
+            }else{
+                document.getElementById('authContent').style.display='block';
+                document.getElementById('verificationPending').style.display='none';
+                loginModal.style.display='flex';
+                appContainer.style.display='none';
                 showError("");
             }
         });
 
-        // --- 4. دالة تسجيل الدخول (بريد/كلمة سر) ---
-        function loginUser() {
-            const emailIn = document.getElementById("emailInput").value.trim();
-            const passwordIn = document.getElementById("passwordInput").value;
-
-            if (!emailIn || !passwordIn) { 
-                return showError("الرجاء ملء جميع حقول البريد وكلمة المرور."); 
-            }
-
-            auth.signInWithEmailAndPassword(emailIn, passwordIn)
-                .then(() => {
-                    showError("");
-                })
-                .catch((error) => {
-                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') { 
-                        showError("البريد الإلكتروني أو كلمة المرور غير صحيحة."); 
-                    } 
-                    else { 
-                        showError("فشل في تسجيل الدخول: " + error.message); 
-                    }
+        // تسجيل دخول بالبريد
+        function loginUser(){
+            const email = document.getElementById('emailInput').value.trim();
+            const pass  = document.getElementById('passwordInput').value;
+            if(!email || !pass) return showError("الرجاء ملء جميع الحقول.");
+            auth.signInWithEmailAndPassword(email,pass)
+                .then(()=>showError(""))
+                .catch(err=>{
+                    if(err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password')
+                        showError("البريد أو كلمة المرور غير صحيحة.");
+                    else
+                        showError("فشل في تسجيل الدخول: " + err.message);
                 });
         }
 
-        // --- 5. دالة تسجيل حساب جديد (مع رابط تفعيل) ---
-        function registerUser() {
-            const emailIn = document.getElementById("emailInput").value.trim();
-            const passwordIn = document.getElementById("passwordInput").value;
+        // إنشاء حساب جديد + إرسال رابط تفعيل
+        function registerUser(){
+            const email = document.getElementById('emailInput').value.trim();
+            const pass  = document.getElementById('passwordInput').value;
+            if(!email || !pass) return showError("الرجاء ملء جميع الحقول.");
+            if(pass.length < 6) return showError("كلمة المرور يجب أن تكون 6 أحرف أو أكثر.");
 
-            if (!emailIn || !passwordIn) { return showError("الرجاء ملء جميع الحقول."); }
-            if (passwordIn.length < 6) { return showError("يجب أن تكون كلمة المرور 6 أحرف أو أكثر."); }
-
-            auth.createUserWithEmailAndPassword(emailIn, passwordIn)
-                .then((userCredential) => {
-                    return userCredential.user.sendEmailVerification();
-                })
-                .then(() => {
-                    // إظهار شاشة "تم إرسال رابط التفعيل"
-                    document.getElementById('authContent').style.display = 'none';
-                    document.getElementById('verificationPending').style.display = 'flex';
+            auth.createUserWithEmailAndPassword(email,pass)
+                .then(cred=>cred.user.sendEmailVerification())
+                .then(()=>{
+                    document.getElementById('authContent').style.display='none';
+                    document.getElementById('verificationPending').style.display='flex';
                     showError("");
                 })
-                .catch((error) => {
-                    if (error.code === 'auth/email-already-in-use') { 
-                        showError("هذا البريد الإلكتروني مسجل بالفعل. حاول تسجيل الدخول."); 
-                    }
-                    else { 
-                        showError("فشل في التسجيل: " + error.message); 
-                    }
+                .catch(err=>{
+                    if(err.code === 'auth/email-already-in-use')
+                        showError("هذا البريد مسجل بالفعل، جرّب تسجيل الدخول.");
+                    else
+                        showError("فشل في التسجيل: " + err.message);
                 });
         }
 
-        // --- 6. دالة تسجيل الخروج ---
-        function logoutUser() {
-            if (confirm("هل أنت متأكد من الخروج؟")) {
-                auth.signOut(); 
+        function logoutUser(){
+            if(confirm("هل أنت متأكد من الخروج؟")){
+                auth.signOut();
             }
         }
 
-        // --- 7. الوظائف الأساسية ---
-        function startApp() {
-            document.getElementById("headerRoomName").innerText = `الغرفة: MainRoom`; 
+        // تشغيل التطبيق
+        function startApp(){
+            document.getElementById('headerRoomName').innerText = "الغرفة: MainRoom";
             cleanOldMessages();
             loadMessages();
         }
 
-        function cleanOldMessages() {
-            const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000); 
+        function cleanOldMessages(){
+            const oneDayAgo = new Date(Date.now() - 24*60*60*1000);
             db.collection("messages")
-              .where("room", "==", defaultRoom)
-              .where("timestamp", "<", oneDayAgo).get()
-              .then((snapshot) => { snapshot.forEach((doc) => doc.ref.delete()); });
+              .where("room","==",defaultRoom)
+              .where("timestamp","<",oneDayAgo).get()
+              .then(snap=>snap.forEach(doc=>doc.ref.delete()));
         }
 
-        function loadMessages() {
+        function loadMessages(){
             db.collection("messages")
-              .where("room", "==", defaultRoom) 
-              .orderBy("timestamp", "asc")
-              .onSnapshot((snapshot) => {
-                  const list = document.getElementById("messagesList");
+              .where("room","==",defaultRoom)
+              .orderBy("timestamp","asc")
+              .onSnapshot(snap=>{
+                  const list = document.getElementById('messagesList');
                   list.innerHTML = "";
-                  
-                  snapshot.forEach((doc) => {
+                  const user = auth.currentUser;
+
+                  snap.forEach(doc=>{
                       const msg = doc.data();
-                      const div = document.createElement("div");
-                      const user = auth.currentUser;
+                      const div = document.createElement('div');
                       const isMine = user && (msg.sender === myName || msg.sender === user.email);
-                      
+
+                      div.className = "message " + (isMine ? "mine" : "others");
+
                       let content = "";
-                      if (msg.type === 'image') { 
-                          content = `<img src="${msg.content}" class="msg-img" style="max-width:100%;border-radius:10px;">`; 
-                      } 
-                      else if (msg.type === 'audio') { 
-                          content = `<audio controls src="${msg.content}"></audio>`; 
-                      } 
-                      else { 
-                          content = msg.content; 
+                      if(msg.type === 'image'){
+                          content = `<img src="${msg.content}" style="max-width:100%;border-radius:10px;">`;
+                      }else if(msg.type === 'audio'){
+                          content = `<audio controls src="${msg.content}"></audio>`;
+                      }else{
+                          content = msg.content;
                       }
 
-                      const senderDisplayName = msg.sender;
-
-                      div.className = `message ${isMine ? 'mine' : 'others'}`;
-                      div.style.padding = "8px 10px";
-                      div.style.borderRadius = "10px";
-                      div.style.maxWidth = "80%";
-                      div.style.background = isMine ? "#dcf8c6" : "#fff";
-                      div.style.alignSelf = isMine ? "flex-end" : "flex-start";
-
                       div.innerHTML = `
-                        ${!isMine ? `<span class="sender-name">${senderDisplayName}</span>` : ''}
+                        ${!isMine ? `<span class="sender-name">${msg.sender}</span>` : ""}
                         <div>${content}</div>
-                        <span class="msg-time" style="font-size:10px;color:#555;display:block;margin-top:3px;text-align:${isMine?'right':'left'};">
-                            ${msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '...'}
+                        <span class="msg-time">
+                            ${msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '...'}
                         </span>
                       `;
                       list.appendChild(div);
                   });
+
                   list.scrollTop = list.scrollHeight;
               });
         }
-        
-        async function toggleRecording() {
+
+        // تسجيل صوت
+        async function toggleRecording(){
             const micBtn = document.getElementById('micBtn');
-            if (!isRecording) {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            if(!isRecording){
+                try{
+                    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
                     mediaRecorder = new MediaRecorder(stream);
                     audioChunks = [];
                     mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-                    mediaRecorder.onstop = () => {
-                        const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                    mediaRecorder.onstop = ()=>{
+                        const blob = new Blob(audioChunks,{type:'audio/webm'});
                         const reader = new FileReader();
                         reader.readAsDataURL(blob);
-                        reader.onloadend = () => pushToFirebase(reader.result, 'audio');
+                        reader.onloadend = ()=>pushToFirebase(reader.result,'audio');
                     };
                     mediaRecorder.start();
                     isRecording = true;
                     micBtn.classList.add('recording');
-                    setTimeout(() => { if(isRecording) toggleRecording(); }, 60000);
-                } catch (err) { alert("يجب السماح بالمايكروفون"); }
-            } else {
+                    setTimeout(()=>{if(isRecording) toggleRecording();},60000);
+                }catch(e){
+                    alert("يجب السماح للمايكروفون.");
+                }
+            }else{
                 mediaRecorder.stop();
                 isRecording = false;
                 micBtn.classList.remove('recording');
             }
         }
 
-        function handleImageSelect() {
+        // صورة
+        function handleImageSelect(){
             const file = document.getElementById('imgInput').files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.src = e.target.result;
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        const ctx = canvas.getContext('2d');
-                        const maxW = 500;
-                        const scale = maxW / img.width;
-                        canvas.width = maxW;
-                        canvas.height = img.height * scale;
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        pushToFirebase(canvas.toDataURL('image/jpeg', 0.7), 'image');
-                    }
-                }
-                reader.readAsDataURL(file);
-            }
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = e=>{
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = ()=>{
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const maxW = 500;
+                    const scale = maxW / img.width;
+                    canvas.width = maxW;
+                    canvas.height = img.height * scale;
+                    ctx.drawImage(img,0,0,canvas.width,canvas.height);
+                    pushToFirebase(canvas.toDataURL('image/jpeg',0.7),'image');
+                };
+            };
+            reader.readAsDataURL(file);
         }
 
-        function sendMessage() {
-            const input = document.getElementById("msgInput");
-            if (input.value.trim()) {
-                pushToFirebase(input.value, 'text');
-                input.value = "";
-            }
+        function sendMessage(){
+            const input = document.getElementById('msgInput');
+            const text = input.value.trim();
+            if(!text) return;
+            pushToFirebase(text,'text');
+            input.value = "";
         }
 
-        function pushToFirebase(content, type) {
+        function pushToFirebase(content,type){
             db.collection("messages").add({
-                content: content,
-                type: type,
-                sender: myName,
-                room: defaultRoom,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                content,
+                type,
+                sender:myName,
+                room:defaultRoom,
+                timestamp:firebase.firestore.FieldValue.serverTimestamp()
             });
         }
 
-        document.getElementById("msgInput").addEventListener("keypress", (e) => {
-            if(e.key==="Enter") sendMessage();
+        document.getElementById('msgInput').addEventListener('keypress',e=>{
+            if(e.key === "Enter") sendMessage();
         });
-        
-        setInterval(cleanOldMessages, 60000);
+
+        setInterval(cleanOldMessages,60000);
     </script>
 </body>
 </html>
