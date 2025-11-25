@@ -22,14 +22,22 @@
         /* [تصميم الهيدر والرسائل] */
         .chat-header { background-color: #008069; color: white; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10; }
         .header-actions { display: flex; align-items: center; gap: 15px; }
-        .profile-btn { background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem; }
+        .profile-btn, .share-btn { background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem; }
         .messages-area { flex: 1; padding: 20px; overflow-y: auto; background-color: #e5ddd5; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); display: flex; flex-direction: column; gap: 10px; }
         .message.mine { align-self: flex-end; background-color: #dcf8c6; border-radius: 8px 0 8px 8px; }
         .sender-name { font-size: 11px; color: #d35400; font-weight: bold; display: block; margin-bottom: 2px; }
         .error-message { color: #ff5555; font-weight: bold; }
 
         /* --- تصميم نافذة الدخول (Glass Modal) --- */
-        .modal { background: rgba(0,0,0,0.5); }
+        .modal {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
         .modal-box { 
             background: rgba(255, 255, 255, 0.1); 
             backdrop-filter: blur(10px); 
@@ -79,6 +87,21 @@
         .profile-box h3 { color: #34d399; margin-bottom: 20px; }
         .profile-box input { background: #374151; color: white; border: 1px solid #4b5563; }
         .profile-box .save-btn { background: #00a884; }
+
+        /* --- رسائل الدردشة والصور --- */
+        .message { max-width: 80%; padding: 10px 12px; background: #fff; border-radius: 8px; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .message.others { align-self: flex-start; border-radius: 0 8px 8px 8px; background: #fff; }
+        .message.mine { align-self: flex-end; background: #dcf8c6; border-radius: 8px 0 8px 8px; }
+        .msg-time { display: block; font-size: 10px; color: #555; margin-top: 4px; text-align: left; }
+        .msg-img { max-width: 250px; border-radius: 8px; cursor: pointer; display: block; }
+
+        /* --- عارض الصور --- */
+        .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 10000; }
+        .lightbox img { max-width: 90%; max-height: 90%; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+
+        /* --- إشعارات نسخ الرابط --- */
+        .copy-notice { position: absolute; top: 70px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.75); color: white; padding: 8px 14px; border-radius: 8px; font-size: 13px; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 20; }
+        .copy-notice.show { opacity: 1; }
     </style>
 </head>
 <body>
@@ -109,7 +132,8 @@
                 <h3>تم التسجيل بنجاح!</h3>
                 <p>تم إرسال **رابط التفعيل** إلى بريدك الإلكتروني.</p>
                 <p style="font-size: 14px; margin-top: 15px;">الرجاء الضغط على الرابط في بريدك (الجيميل) ثم **العودة لتسجيل الدخول**.</p>
-                <button style="margin-top: 30px; background: #34d399; color: #1e293b; padding: 10px; border-radius: 10px;" onclick="auth.signOut()">العودة لصفحة الدخول</button>
+                <button style="margin-top: 30px; background: #34d399; color: #1e293b; padding: 10px; border-radius: 10px;" onclick="reloadVerificationState()">تحقق الآن من التفعيل</button>
+                <button style="margin-top: 10px; background: #4b5563; color: #f3f3f3; padding: 10px; border-radius: 10px;" onclick="resendVerificationEmail()">إعادة إرسال رابط التفعيل</button>
             </div>
         </div>
     </div>
@@ -137,10 +161,12 @@
                 <div class="room-info" id="headerRoomName">الغرفة الرئيسية</div>
             </div>
             <div class="header-actions">
+                <button class="share-btn" onclick="copySiteLink()" title="نسخ رابط الموقع"><i class="fa-solid fa-link"></i></button>
                 <button class="profile-btn" onclick="showProfileModal()"><i class="fa-solid fa-user"></i></button>
                 <button class="logout-btn" onclick="logoutUser()"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
             </div>
         </div>
+        <div id="copyNotice" class="copy-notice">تم نسخ رابط الموقع</div>
         <div class="messages-area" id="messagesList"></div>
         <div class="input-area">
             <input type="file" id="imgInput" accept="image/*" style="display: none;" onchange="handleImageSelect()">
@@ -149,6 +175,10 @@
             <input type="text" id="msgInput" placeholder="اكتب رسالة..." autocomplete="off">
             <button class="icon-btn" id="sendBtn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane" style="color: #008069;"></i></button>
         </div>
+    </div>
+
+    <div id="lightbox" class="lightbox" onclick="this.style.display='none'">
+        <img id="lightboxImg" alt="المعاينة">
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -171,13 +201,40 @@
         const auth = firebase.auth(); 
 
         let myName = "";
-        const defaultRoom = "MainRoom"; 
+        const defaultRoom = "MainRoom";
         let mediaRecorder;
         let audioChunks = [];
         let isRecording = false;
+        let noticeTimeout;
 
         function showError(message) {
             document.getElementById('authError').innerText = message;
+        }
+
+        function copySiteLink() {
+            const notice = document.getElementById('copyNotice');
+            const url = window.location.href;
+
+            const showNotice = (text) => {
+                notice.textContent = text;
+                notice.classList.add('show');
+                clearTimeout(noticeTimeout);
+                noticeTimeout = setTimeout(() => notice.classList.remove('show'), 2500);
+            };
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url)
+                    .then(() => showNotice('تم نسخ رابط الموقع'))
+                    .catch(() => showNotice('تعذر نسخ الرابط، جرّب يدويًا'));
+            } else {
+                const textarea = document.createElement('textarea');
+                textarea.value = url;
+                document.body.appendChild(textarea);
+                textarea.select();
+                const succeeded = document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showNotice(succeeded ? 'تم نسخ رابط الموقع' : 'تعذر نسخ الرابط، جرّب يدويًا');
+            }
         }
         
         // --- 1. وظائف الملف الشخصي (Profile Functions) ---
@@ -234,22 +291,23 @@
 
 
         // --- 3. المصادقة وتتبع حالة الدخول ---
-        auth.onAuthStateChanged(user => {
+        auth.onAuthStateChanged(async (user) => {
             const appContainer = document.querySelector('.app-container');
             const loginModal = document.getElementById("loginModal");
 
             if (user) {
+                await user.reload();
+
                 if (user.providerData[0].providerId === 'password' && !user.emailVerified) {
                     document.getElementById('authContent').style.display = 'none';
                     document.getElementById('verificationPending').style.display = 'flex';
                     appContainer.style.display = "none";
                     loginModal.style.display = "flex";
-                    auth.signOut(); 
                     return;
                 }
-                
-                myName = user.displayName || user.email.split('@')[0]; 
-                
+
+                myName = user.displayName || user.email.split('@')[0];
+
                 startApp();
                 loginModal.style.display = "none";
                 appContainer.style.display = "flex";
@@ -294,12 +352,40 @@
                         .then(() => {
                             document.getElementById('authContent').style.display = 'none';
                             document.getElementById('verificationPending').style.display = 'flex';
-                            auth.signOut(); 
                         });
                 })
                 .catch((error) => {
                     if (error.code === 'auth/email-already-in-use') { showError("هذا البريد الإلكتروني مسجل بالفعل. حاول تسجيل الدخول."); }
                     else { showError("فشل في التسجيل: " + error.message); }
+                });
+        }
+
+        async function reloadVerificationState() {
+            const user = auth.currentUser;
+            if (!user) return;
+            await user.reload();
+
+            if (user.emailVerified) {
+                document.getElementById('verificationPending').style.display = 'none';
+                showError("");
+                startApp();
+                document.querySelector('.app-container').style.display = "flex";
+                document.getElementById('loginModal').style.display = "none";
+            } else {
+                showError("لم يتم تفعيل البريد بعد. تحقق من بريدك أو أعد إرسال الرابط.");
+            }
+        }
+
+        function resendVerificationEmail() {
+            const user = auth.currentUser;
+            if (!user) return showError("لا يوجد مستخدم مسجل حالياً.");
+
+            user.sendEmailVerification()
+                .then(() => {
+                    showError("تم إرسال رابط التفعيل مرة أخرى إلى بريدك.");
+                })
+                .catch((error) => {
+                    showError("تعذر إرسال رابط التفعيل: " + error.message);
                 });
         }
 
