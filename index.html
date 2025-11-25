@@ -19,17 +19,24 @@
         }
         .app-container { width: 100%; max-width: 600px; height: 100vh; background: #fff; display: flex; flex-direction: column; position: relative; }
         
-        /* [تصميم الهيدر والرسائل] */
         .chat-header { background-color: #008069; color: white; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10; }
         .header-actions { display: flex; align-items: center; gap: 15px; }
         .profile-btn { background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem; }
         .messages-area { flex: 1; padding: 20px; overflow-y: auto; background-color: #e5ddd5; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); display: flex; flex-direction: column; gap: 10px; }
-        .message.mine { align-self: flex-end; background-color: #dcf8c6; border-radius: 8px 0 8px 8px; }
+        .message.mine { align-self: flex-end; background-color: #dcf8c6; border-radius: 8px 0 8 8px; }
         .sender-name { font-size: 11px; color: #d35400; font-weight: bold; display: block; margin-bottom: 2px; }
         .error-message { color: #ff5555; font-weight: bold; }
 
         /* --- تصميم نافذة الدخول (Glass Modal) --- */
-        .modal { background: rgba(0,0,0,0.5); }
+        .modal { 
+            position: fixed;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0,0,0,0.5); 
+            z-index: 9998;
+        }
         .modal-box { 
             background: rgba(255, 255, 255, 0.1); 
             backdrop-filter: blur(10px); 
@@ -38,6 +45,8 @@
             border-radius: 20px;
             color: #f3f3f3;
             padding: 40px 30px;
+            width: 90%;
+            max-width: 400px;
         }
         .modal-box .title { font-size: 28px; color: #ffcc00; margin-bottom: 5px; } 
 
@@ -63,8 +72,8 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); transition: transform 0.2s;
         }
         .google-btn i { font-size: 1.2rem; margin-left: 10px; color: #db4437; } 
-        .pending-verification { color: white; }
-        .pending-verification i { color: #34d399; }
+        .pending-verification { color: white; text-align: center; }
+        .pending-verification i { color: #34d399; font-size: 40px; margin-bottom: 10px; }
 
         /* --- تصميم نافذة الملف الشخصي --- */
         .modal-profile {
@@ -77,12 +86,44 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
         .profile-box h3 { color: #34d399; margin-bottom: 20px; }
-        .profile-box input { background: #374151; color: white; border: 1px solid #4b5563; }
-        .profile-box .save-btn { background: #00a884; }
+        .profile-box input { 
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #374151; 
+            color: white; 
+            border: 1px solid #4b5563; 
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+        .profile-box .save-btn { background: #00a884; color: #fff; border: none; padding: 10px; border-radius: 8px; width: 100%; cursor: pointer; }
+        .secondary-btn { background:#4b5563;color:#fff;border:none;padding:10px;border-radius:8px;width:100%;cursor:pointer; }
+
+        .input-area {
+            display:flex;
+            align-items:center;
+            padding:10px;
+            gap:5px;
+            border-top:1px solid #ddd;
+            background:#f5f5f5;
+        }
+        .input-area input[type="text"] {
+            flex:1;
+            padding:8px 10px;
+            border-radius:20px;
+            border:1px solid #ccc;
+        }
+        .icon-btn {
+            border:none;
+            background:transparent;
+            cursor:pointer;
+            font-size:18px;
+        }
     </style>
 </head>
 <body>
 
+    <!-- نافذة تسجيل الدخول / التسجيل -->
     <div class="modal" id="loginModal">
         <div class="modal-box">
             <div id="authContent">
@@ -107,13 +148,14 @@
             <div id="verificationPending" style="display: none;" class="pending-verification">
                 <i class="fa-solid fa-envelope-circle-check"></i>
                 <h3>تم التسجيل بنجاح!</h3>
-                <p>تم إرسال **رابط التفعيل** إلى بريدك الإلكتروني.</p>
-                <p style="font-size: 14px; margin-top: 15px;">الرجاء الضغط على الرابط في بريدك (الجيميل) ثم **العودة لتسجيل الدخول**.</p>
-                <button style="margin-top: 30px; background: #34d399; color: #1e293b; padding: 10px; border-radius: 10px;" onclick="auth.signOut()">العودة لصفحة الدخول</button>
+                <p>تم إرسال رابط التفعيل إلى بريدك الإلكتروني.</p>
+                <p style="font-size: 14px; margin-top: 15px;">الرجاء الضغط على الرابط في بريدك (الجيميل) ثم العودة لتسجيل الدخول.</p>
+                <button style="margin-top: 30px; background: #34d399; color: #1e293b; padding: 10px; border-radius: 10px; border:none; cursor:pointer;" onclick="auth.signOut()">العودة لصفحة الدخول</button>
             </div>
         </div>
     </div>
 
+    <!-- نافذة الملف الشخصي -->
     <div class="modal-profile" id="profileModal">
         <div class="profile-box">
             <h3>الملف الشخصي 👤</h3>
@@ -130,6 +172,7 @@
         </div>
     </div>
     
+    <!-- واجهة التطبيق -->
     <div class="app-container" style="display: none;">
         <div class="chat-header">
             <div class="header-content">
@@ -138,7 +181,7 @@
             </div>
             <div class="header-actions">
                 <button class="profile-btn" onclick="showProfileModal()"><i class="fa-solid fa-user"></i></button>
-                <button class="logout-btn" onclick="logoutUser()"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
+                <button class="logout-btn" onclick="logoutUser()" style="background:none;border:none;color:white;cursor:pointer;"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
             </div>
         </div>
         <div class="messages-area" id="messagesList"></div>
@@ -151,12 +194,13 @@
         </div>
     </div>
 
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <script>
-        // --- إعدادات Firebase الخاصة بك (sjfie-bed64) ---
+        // --- إعدادات Firebase الخاصة بك ---
         const firebaseConfig = {
             apiKey: "AIzaSyBPapPdivEQO1UPqQdCRTBI6ct8KZDtqyw", 
             authDomain: "sjfie-bed64.firebaseapp.com",
@@ -180,10 +224,10 @@
             document.getElementById('authError').innerText = message;
         }
         
-        // --- 1. وظائف الملف الشخصي (Profile Functions) ---
-        
+        // --- 1. وظائف الملف الشخصي ---
         function showProfileModal() {
             const user = auth.currentUser;
+            if (!user) return;
             document.getElementById('profileEmail').value = user.email;
             document.getElementById('profileDisplayName').value = user.displayName || user.email.split('@')[0];
             document.getElementById('profileModal').style.display = 'flex';
@@ -200,6 +244,11 @@
             }
 
             const user = auth.currentUser;
+            if (!user) {
+                profileError.innerText = "لم يتم العثور على مستخدم مسجّل دخول.";
+                return;
+            }
+
             user.updateProfile({ displayName: newName })
                 .then(() => {
                     profileError.innerText = "تم حفظ الاسم بنجاح! سيتم تحديث الشات.";
@@ -218,20 +267,19 @@
             auth.signInWithPopup(provider)
                 .catch((error) => {
                     if (error.code === 'auth/account-exists-with-different-credential') {
-                        showError("هذا البريد الإلكتروني مسجل مسبقاً. الرجاء استخدام طريقة التسجيل الأصلية (البريد وكلمة السر) أو تسجيل الخروج من كل الطرق والمحاولة مرة أخرى.");
+                        showError("هذا البريد الإلكتروني مسجل مسبقاً. الرجاء استخدام طريقة التسجيل الأصلية (البريد وكلمة السر).");
                     }
                     else if (error.code === 'auth/popup-closed-by-user') {
                         showError("تم إلغاء عملية الدخول من قبل المستخدم.");
                     } else if (error.code === 'auth/cancelled-popup-request') {
-                         showError("الرجاء المحاولة مرة واحدة فقط.");
+                        showError("الرجاء المحاولة مرة واحدة فقط.");
                     } else if (error.code === 'auth/unauthorized-domain') {
-                         showError("خطأ أمني: يجب إضافة نطاق الموقع (basmali12.github.io) في إعدادات Firebase.");
+                        showError("خطأ أمني: يجب إضافة نطاق الموقع في إعدادات Firebase.");
                     } else {
                         showError("فشل الدخول عبر جوجل: " + error.message);
                     }
                 });
         }
-
 
         // --- 3. المصادقة وتتبع حالة الدخول ---
         auth.onAuthStateChanged(user => {
@@ -239,17 +287,20 @@
             const loginModal = document.getElementById("loginModal");
 
             if (user) {
-                if (user.providerData[0].providerId === 'password' && !user.emailVerified) {
+                const isEmailPassword = user.providerData.some(p => p.providerId === 'password');
+
+                // إذا مسجل عن طريق الإيميل/باسوررد ولا زال غير مفعل
+                if (isEmailPassword && !user.emailVerified) {
                     document.getElementById('authContent').style.display = 'none';
                     document.getElementById('verificationPending').style.display = 'flex';
                     appContainer.style.display = "none";
                     loginModal.style.display = "flex";
-                    auth.signOut(); 
+                    // لا نسوي signOut هنا حتى ما يتلخبط
                     return;
                 }
                 
-                myName = user.displayName || user.email.split('@')[0]; 
-                
+                myName = user.displayName || (user.email ? user.email.split('@')[0] : "مستخدم");
+
                 startApp();
                 loginModal.style.display = "none";
                 appContainer.style.display = "flex";
@@ -262,25 +313,30 @@
             }
         });
 
-
         // --- 4. دالة تسجيل الدخول (بريد/كلمة سر) ---
         function loginUser() {
             const emailIn = document.getElementById("emailInput").value.trim();
             const passwordIn = document.getElementById("passwordInput").value;
 
-            if (!emailIn || !passwordIn) { return showError("الرجاء ملء جميع حقول البريد وكلمة المرور."); }
+            if (!emailIn || !passwordIn) { 
+                return showError("الرجاء ملء جميع حقول البريد وكلمة المرور."); 
+            }
 
             auth.signInWithEmailAndPassword(emailIn, passwordIn)
                 .then(() => {
-                    showError(""); // **تصحيح الخطأ**: مسح رسالة الخطأ عند النجاح
+                    showError("");
                 })
                 .catch((error) => {
-                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') { showError("البريد الإلكتروني أو كلمة المرور غير صحيحة."); } 
-                    else { showError("فشل في تسجيل الدخول: " + error.message); }
+                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') { 
+                        showError("البريد الإلكتروني أو كلمة المرور غير صحيحة."); 
+                    } 
+                    else { 
+                        showError("فشل في تسجيل الدخول: " + error.message); 
+                    }
                 });
         }
 
-        // --- 5. دالة تسجيل حساب جديد (يرسل رابط التفعيل) ---
+        // --- 5. دالة تسجيل حساب جديد (مع رابط تفعيل) ---
         function registerUser() {
             const emailIn = document.getElementById("emailInput").value.trim();
             const passwordIn = document.getElementById("passwordInput").value;
@@ -290,28 +346,32 @@
 
             auth.createUserWithEmailAndPassword(emailIn, passwordIn)
                 .then((userCredential) => {
-                    userCredential.user.sendEmailVerification()
-                        .then(() => {
-                            document.getElementById('authContent').style.display = 'none';
-                            document.getElementById('verificationPending').style.display = 'flex';
-                            auth.signOut(); 
-                        });
+                    return userCredential.user.sendEmailVerification();
+                })
+                .then(() => {
+                    // إظهار شاشة "تم إرسال رابط التفعيل"
+                    document.getElementById('authContent').style.display = 'none';
+                    document.getElementById('verificationPending').style.display = 'flex';
+                    showError("");
                 })
                 .catch((error) => {
-                    if (error.code === 'auth/email-already-in-use') { showError("هذا البريد الإلكتروني مسجل بالفعل. حاول تسجيل الدخول."); }
-                    else { showError("فشل في التسجيل: " + error.message); }
+                    if (error.code === 'auth/email-already-in-use') { 
+                        showError("هذا البريد الإلكتروني مسجل بالفعل. حاول تسجيل الدخول."); 
+                    }
+                    else { 
+                        showError("فشل في التسجيل: " + error.message); 
+                    }
                 });
         }
 
         // --- 6. دالة تسجيل الخروج ---
         function logoutUser() {
-            if(confirm("هل أنت متأكد من الخروج؟")) {
+            if (confirm("هل أنت متأكد من الخروج؟")) {
                 auth.signOut(); 
             }
         }
 
         // --- 7. الوظائف الأساسية ---
-        
         function startApp() {
             document.getElementById("headerRoomName").innerText = `الغرفة: MainRoom`; 
             cleanOldMessages();
@@ -337,20 +397,35 @@
                   snapshot.forEach((doc) => {
                       const msg = doc.data();
                       const div = document.createElement("div");
-                      const isMine = msg.sender === myName || msg.sender === auth.currentUser.email;
+                      const user = auth.currentUser;
+                      const isMine = user && (msg.sender === myName || msg.sender === user.email);
                       
                       let content = "";
-                      if (msg.type === 'image') { content = `<img src="${msg.content}" class="msg-img" onclick="showImage(this.src)">`; } 
-                      else if (msg.type === 'audio') { content = `<audio controls src="${msg.content}"></audio>`; } 
-                      else { content = msg.content; }
+                      if (msg.type === 'image') { 
+                          content = `<img src="${msg.content}" class="msg-img" style="max-width:100%;border-radius:10px;">`; 
+                      } 
+                      else if (msg.type === 'audio') { 
+                          content = `<audio controls src="${msg.content}"></audio>`; 
+                      } 
+                      else { 
+                          content = msg.content; 
+                      }
 
                       const senderDisplayName = msg.sender;
 
                       div.className = `message ${isMine ? 'mine' : 'others'}`;
+                      div.style.padding = "8px 10px";
+                      div.style.borderRadius = "10px";
+                      div.style.maxWidth = "80%";
+                      div.style.background = isMine ? "#dcf8c6" : "#fff";
+                      div.style.alignSelf = isMine ? "flex-end" : "flex-start";
+
                       div.innerHTML = `
                         ${!isMine ? `<span class="sender-name">${senderDisplayName}</span>` : ''}
-                        ${content}
-                        <span class="msg-time">${msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '...'}</span>
+                        <div>${content}</div>
+                        <span class="msg-time" style="font-size:10px;color:#555;display:block;margin-top:3px;text-align:${isMine?'right':'left'};">
+                            ${msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '...'}
+                        </span>
                       `;
                       list.appendChild(div);
                   });
@@ -422,11 +497,6 @@
                 room: defaultRoom,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
-        }
-
-        function showImage(src) {
-            document.getElementById('lightboxImg').src = src;
-            document.getElementById('lightbox').style.display = 'flex';
         }
 
         document.getElementById("msgInput").addEventListener("keypress", (e) => {
