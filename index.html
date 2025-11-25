@@ -79,6 +79,17 @@
         .profile-box h3 { color: #34d399; margin-bottom: 20px; }
         .profile-box input { background: #374151; color: white; border: 1px solid #4b5563; }
         .profile-box .save-btn { background: #00a884; }
+
+        /* --- رسائل الدردشة والصور --- */
+        .message { max-width: 80%; padding: 10px 12px; background: #fff; border-radius: 8px; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .message.others { align-self: flex-start; border-radius: 0 8px 8px 8px; background: #fff; }
+        .message.mine { align-self: flex-end; background: #dcf8c6; border-radius: 8px 0 8px 8px; }
+        .msg-time { display: block; font-size: 10px; color: #555; margin-top: 4px; text-align: left; }
+        .msg-img { max-width: 250px; border-radius: 8px; cursor: pointer; display: block; }
+
+        /* --- عارض الصور --- */
+        .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 10000; }
+        .lightbox img { max-width: 90%; max-height: 90%; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
@@ -149,6 +160,10 @@
             <input type="text" id="msgInput" placeholder="اكتب رسالة..." autocomplete="off">
             <button class="icon-btn" id="sendBtn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane" style="color: #008069;"></i></button>
         </div>
+    </div>
+
+    <div id="lightbox" class="lightbox" onclick="this.style.display='none'">
+        <img id="lightboxImg" alt="المعاينة">
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
