@@ -15,7 +15,6 @@
             justify-content: center; 
             align-items: center; 
             height: 100vh;
-            /* الخلفية المتدرجة الجمالية */
             background: linear-gradient(135deg, #161e2f 0%, #080d19 100%); 
         }
         .app-container { width: 100%; max-width: 600px; height: 100vh; background: #fff; display: flex; flex-direction: column; position: relative; }
@@ -272,6 +271,9 @@
             if (!emailIn || !passwordIn) { return showError("الرجاء ملء جميع حقول البريد وكلمة المرور."); }
 
             auth.signInWithEmailAndPassword(emailIn, passwordIn)
+                .then(() => {
+                    showError(""); // **تصحيح الخطأ**: مسح رسالة الخطأ عند النجاح
+                })
                 .catch((error) => {
                     if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') { showError("البريد الإلكتروني أو كلمة المرور غير صحيحة."); } 
                     else { showError("فشل في تسجيل الدخول: " + error.message); }
@@ -310,6 +312,12 @@
 
         // --- 7. الوظائف الأساسية ---
         
+        function startApp() {
+            document.getElementById("headerRoomName").innerText = `الغرفة: MainRoom`; 
+            cleanOldMessages();
+            loadMessages();
+        }
+
         function cleanOldMessages() {
             const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000); 
             db.collection("messages")
