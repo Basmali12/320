@@ -22,7 +22,7 @@
         /* [تصميم الهيدر والرسائل] */
         .chat-header { background-color: #008069; color: white; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10; }
         .header-actions { display: flex; align-items: center; gap: 15px; }
-        .profile-btn { background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem; }
+        .profile-btn, .share-btn { background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem; }
         .messages-area { flex: 1; padding: 20px; overflow-y: auto; background-color: #e5ddd5; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); display: flex; flex-direction: column; gap: 10px; }
         .message.mine { align-self: flex-end; background-color: #dcf8c6; border-radius: 8px 0 8px 8px; }
         .sender-name { font-size: 11px; color: #d35400; font-weight: bold; display: block; margin-bottom: 2px; }
@@ -90,6 +90,10 @@
         /* --- عارض الصور --- */
         .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 10000; }
         .lightbox img { max-width: 90%; max-height: 90%; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+
+        /* --- إشعارات نسخ الرابط --- */
+        .copy-notice { position: absolute; top: 70px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.75); color: white; padding: 8px 14px; border-radius: 8px; font-size: 13px; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 20; }
+        .copy-notice.show { opacity: 1; }
     </style>
 </head>
 <body>
@@ -148,10 +152,12 @@
                 <div class="room-info" id="headerRoomName">الغرفة الرئيسية</div>
             </div>
             <div class="header-actions">
+                <button class="share-btn" onclick="copySiteLink()" title="نسخ رابط الموقع"><i class="fa-solid fa-link"></i></button>
                 <button class="profile-btn" onclick="showProfileModal()"><i class="fa-solid fa-user"></i></button>
                 <button class="logout-btn" onclick="logoutUser()"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
             </div>
         </div>
+        <div id="copyNotice" class="copy-notice">تم نسخ رابط الموقع</div>
         <div class="messages-area" id="messagesList"></div>
         <div class="input-area">
             <input type="file" id="imgInput" accept="image/*" style="display: none;" onchange="handleImageSelect()">
@@ -186,13 +192,40 @@
         const auth = firebase.auth(); 
 
         let myName = "";
-        const defaultRoom = "MainRoom"; 
+        const defaultRoom = "MainRoom";
         let mediaRecorder;
         let audioChunks = [];
         let isRecording = false;
+        let noticeTimeout;
 
         function showError(message) {
             document.getElementById('authError').innerText = message;
+        }
+
+        function copySiteLink() {
+            const notice = document.getElementById('copyNotice');
+            const url = window.location.href;
+
+            const showNotice = (text) => {
+                notice.textContent = text;
+                notice.classList.add('show');
+                clearTimeout(noticeTimeout);
+                noticeTimeout = setTimeout(() => notice.classList.remove('show'), 2500);
+            };
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url)
+                    .then(() => showNotice('تم نسخ رابط الموقع'))
+                    .catch(() => showNotice('تعذر نسخ الرابط، جرّب يدويًا'));
+            } else {
+                const textarea = document.createElement('textarea');
+                textarea.value = url;
+                document.body.appendChild(textarea);
+                textarea.select();
+                const succeeded = document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showNotice(succeeded ? 'تم نسخ رابط الموقع' : 'تعذر نسخ الرابط، جرّب يدويًا');
+            }
         }
         
         // --- 1. وظائف الملف الشخصي (Profile Functions) ---
