@@ -29,7 +29,15 @@
         .error-message { color: #ff5555; font-weight: bold; }
 
         /* --- تصميم نافذة الدخول (Glass Modal) --- */
-        .modal { background: rgba(0,0,0,0.5); }
+        .modal {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
         .modal-box { 
             background: rgba(255, 255, 255, 0.1); 
             backdrop-filter: blur(10px); 
@@ -124,7 +132,8 @@
                 <h3>تم التسجيل بنجاح!</h3>
                 <p>تم إرسال **رابط التفعيل** إلى بريدك الإلكتروني.</p>
                 <p style="font-size: 14px; margin-top: 15px;">الرجاء الضغط على الرابط في بريدك (الجيميل) ثم **العودة لتسجيل الدخول**.</p>
-                <button style="margin-top: 30px; background: #34d399; color: #1e293b; padding: 10px; border-radius: 10px;" onclick="auth.signOut()">العودة لصفحة الدخول</button>
+                <button style="margin-top: 30px; background: #34d399; color: #1e293b; padding: 10px; border-radius: 10px;" onclick="reloadVerificationState()">تحقق الآن من التفعيل</button>
+                <button style="margin-top: 10px; background: #4b5563; color: #f3f3f3; padding: 10px; border-radius: 10px;" onclick="resendVerificationEmail()">إعادة إرسال رابط التفعيل</button>
             </div>
         </div>
     </div>
@@ -282,22 +291,23 @@
 
 
         // --- 3. المصادقة وتتبع حالة الدخول ---
-        auth.onAuthStateChanged(user => {
+        auth.onAuthStateChanged(async (user) => {
             const appContainer = document.querySelector('.app-container');
             const loginModal = document.getElementById("loginModal");
 
             if (user) {
+                await user.reload();
+
                 if (user.providerData[0].providerId === 'password' && !user.emailVerified) {
                     document.getElementById('authContent').style.display = 'none';
                     document.getElementById('verificationPending').style.display = 'flex';
                     appContainer.style.display = "none";
                     loginModal.style.display = "flex";
-                    auth.signOut(); 
                     return;
                 }
-                
-                myName = user.displayName || user.email.split('@')[0]; 
-                
+
+                myName = user.displayName || user.email.split('@')[0];
+
                 startApp();
                 loginModal.style.display = "none";
                 appContainer.style.display = "flex";
@@ -342,12 +352,40 @@
                         .then(() => {
                             document.getElementById('authContent').style.display = 'none';
                             document.getElementById('verificationPending').style.display = 'flex';
-                            auth.signOut(); 
                         });
                 })
                 .catch((error) => {
                     if (error.code === 'auth/email-already-in-use') { showError("هذا البريد الإلكتروني مسجل بالفعل. حاول تسجيل الدخول."); }
                     else { showError("فشل في التسجيل: " + error.message); }
+                });
+        }
+
+        async function reloadVerificationState() {
+            const user = auth.currentUser;
+            if (!user) return;
+            await user.reload();
+
+            if (user.emailVerified) {
+                document.getElementById('verificationPending').style.display = 'none';
+                showError("");
+                startApp();
+                document.querySelector('.app-container').style.display = "flex";
+                document.getElementById('loginModal').style.display = "none";
+            } else {
+                showError("لم يتم تفعيل البريد بعد. تحقق من بريدك أو أعد إرسال الرابط.");
+            }
+        }
+
+        function resendVerificationEmail() {
+            const user = auth.currentUser;
+            if (!user) return showError("لا يوجد مستخدم مسجل حالياً.");
+
+            user.sendEmailVerification()
+                .then(() => {
+                    showError("تم إرسال رابط التفعيل مرة أخرى إلى بريدك.");
+                })
+                .catch((error) => {
+                    showError("تعذر إرسال رابط التفعيل: " + error.message);
                 });
         }
 
