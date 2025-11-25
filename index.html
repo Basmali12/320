@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شات أبو أمير (تصميم نهائي)</title>
+    <title>شات أبو أمير (النسخة النهائية)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- الأساسيات والتصميم العام --- */
+        /* --- التصميم الأساسي (لم يتغير) --- */
         body { 
             font-family: 'Segoe UI', sans-serif; 
             background: #d1d7db; 
@@ -15,6 +15,7 @@
             justify-content: center; 
             align-items: center; 
             height: 100vh;
+            /* الخلفية المتدرجة الجمالية */
             background: linear-gradient(135deg, #161e2f 0%, #080d19 100%); 
         }
         .app-container { width: 100%; max-width: 600px; height: 100vh; background: #fff; display: flex; flex-direction: column; position: relative; }
@@ -69,7 +70,7 @@
         /* --- تصميم نافذة الملف الشخصي --- */
         .modal-profile {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.7); z-index: 9999; /* z-index عالي جداً */
+            background: rgba(0,0,0,0.7); z-index: 9999; 
             justify-content: center; align-items: center;
         }
         .profile-box {
@@ -180,7 +181,7 @@
             document.getElementById('authError').innerText = message;
         }
         
-        // --- وظائف الملف الشخصي (Profile Functions) ---
+        // --- 1. وظائف الملف الشخصي (Profile Functions) ---
         
         function showProfileModal() {
             const user = auth.currentUser;
@@ -212,12 +213,15 @@
                 });
         }
         
-        // --- 1. الدخول عبر جوجل ---
+        // --- 2. الدخول عبر جوجل ---
         function signInWithGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider)
                 .catch((error) => {
-                    if (error.code === 'auth/popup-closed-by-user') {
+                    if (error.code === 'auth/account-exists-with-different-credential') {
+                        showError("هذا البريد الإلكتروني مسجل مسبقاً. الرجاء استخدام طريقة التسجيل الأصلية (البريد وكلمة السر) أو تسجيل الخروج من كل الطرق والمحاولة مرة أخرى.");
+                    }
+                    else if (error.code === 'auth/popup-closed-by-user') {
                         showError("تم إلغاء عملية الدخول من قبل المستخدم.");
                     } else if (error.code === 'auth/cancelled-popup-request') {
                          showError("الرجاء المحاولة مرة واحدة فقط.");
@@ -230,7 +234,7 @@
         }
 
 
-        // --- 2. المصادقة وتتبع حالة الدخول ---
+        // --- 3. المصادقة وتتبع حالة الدخول ---
         auth.onAuthStateChanged(user => {
             const appContainer = document.querySelector('.app-container');
             const loginModal = document.getElementById("loginModal");
@@ -260,7 +264,7 @@
         });
 
 
-        // --- 3. دالة تسجيل الدخول (بريد/كلمة سر) ---
+        // --- 4. دالة تسجيل الدخول (بريد/كلمة سر) ---
         function loginUser() {
             const emailIn = document.getElementById("emailInput").value.trim();
             const passwordIn = document.getElementById("passwordInput").value;
@@ -274,7 +278,7 @@
                 });
         }
 
-        // --- 4. دالة تسجيل حساب جديد (يرسل رابط التفعيل) ---
+        // --- 5. دالة تسجيل حساب جديد (يرسل رابط التفعيل) ---
         function registerUser() {
             const emailIn = document.getElementById("emailInput").value.trim();
             const passwordIn = document.getElementById("passwordInput").value;
@@ -297,8 +301,15 @@
                 });
         }
 
-        // --- 5. باقي الوظائف (الحذف/التحميل/الوسائط) ---
+        // --- 6. دالة تسجيل الخروج ---
+        function logoutUser() {
+            if(confirm("هل أنت متأكد من الخروج؟")) {
+                auth.signOut(); 
+            }
+        }
 
+        // --- 7. الوظائف الأساسية ---
+        
         function cleanOldMessages() {
             const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000); 
             db.collection("messages")
