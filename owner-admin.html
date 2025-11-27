@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>لوحة صاحب المنصّة - إدارة المتاجر</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:"Tajawal",system-ui;
+      background:#020617;
+      color:#e5e7eb;
+      min-height:100vh;
+      padding:16px;
+    }
+    .wrap{
+      max-width:900px;
+      margin:0 auto;
+    }
+    h1{
+      font-size:20px;
+      margin-bottom:10px;
+    }
+    .box{
+      background:#020617;
+      border-radius:12px;
+      border:1px solid #1f2937;
+      padding:12px;
+      margin-bottom:12px;
+    }
+    label{
+      font-size:12px;
+      display:block;
+      margin-bottom:2px;
+      color:#9ca3af;
+    }
+    input{
+      width:100%;
+      padding:7px;
+      border-radius:8px;
+      border:1px solid #374151;
+      background:#020617;
+      color:#e5e7eb;
+      margin-bottom:8px;
+      font-size:13px;
+    }
+    button{
+      padding:7px 12px;
+      border-radius:999px;
+      border:none;
+      cursor:pointer;
+      font-size:13px;
+      font-family:inherit;
+    }
+    .btn-main{background:#22c55e;color:#020617;font-weight:600;}
+    .btn-outline{background:transparent;color:#e5e7eb;border:1px solid #4b5563;}
+    .row{display:flex;gap:8px;flex-wrap:wrap;}
+    .row>div{flex:1;min-width:160px;}
+    .small{font-size:11px;color:#9ca3af;}
+    table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px;}
+    th,td{border-bottom:1px solid #111827;padding:6px 4px;text-align:right;}
+    th{color:#9ca3af;font-weight:500;}
+    .badge{
+      display:inline-block;
+      padding:2px 8px;
+      border-radius:999px;
+      font-size:11px;
+    }
+    .badge-active{background:#22c55e33;color:#22c55e;}
+    .badge-off{background:#f9731633;color:#f97316;}
+    a.link{
+      color:#38bdf8;
+      text-decoration:none;
+      word-break:break-all;
+    }
+    .top-alert{
+      margin-bottom:10px;
+      font-size:12px;
+      color:#fde68a;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>لوحة صاحب المنصّة – إدارة المتاجر</h1>
+  <div class="top-alert">
+    هذا الملف إلك فقط، لا تعطي رابطه لأي زبون 🛑
+  </div>
+
+  <div class="box">
+    <h2 style="font-size:15px;margin-bottom:6px;">إنشاء متجر جديد</h2>
+    <div class="small" id="ownerInfo"></div>
+    <div style="height:6px;"></div>
+
+    <div class="row">
+      <div>
+        <label>Store ID (بالإنجليزي، بدون فراغات)</label>
+        <input id="storeIdInput" placeholder="مثال: telesat1 أو basim-shop">
+      </div>
+      <div>
+        <label>اسم المتجر (يظهر للعميل)</label>
+        <input id="storeNameInput" placeholder="مثال: متجر باسم للستلايت">
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>رقم الواتساب</label>
+        <input id="storeWhatsInput" placeholder="مثال: 9647XXXXXXXXX">
+      </div>
+      <div>
+        <label>إيميل الأدمن للمتجر</label>
+        <input id="storeEmailInput" placeholder="email@example.com">
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>باسورد الأدمن للمتجر</label>
+        <input id="storePassInput" placeholder="اختر كلمة سر" type="password">
+      </div>
+    </div>
+
+    <button class="btn-main" id="createStoreBtn">إنشاء المتجر</button>
+    <div class="small" id="createMsg" style="margin-top:6px;"></div>
+  </div>
+
+  <div class="box">
+    <h2 style="font-size:15px;margin-bottom:6px;">قائمة المتاجر</h2>
+    <div class="small">تقدر توقف/تشغل أي متجر، وتاخذ الرابط الجاهز للزبون.</div>
+    <div id="storesTableWrap"></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+  // كلمة سر صاحب المنصة (إلك إنت) حتى ما حد يدخل هنا
+  const MASTER_ADMIN_CODE = "999999"; // غيّرها لشي بس إنت تعرفه
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAEX8BjlYjsHOxDwD-Wu9qyFyIR3Wb6RxQ",
+    authDomain: "mtgr-24718.firebaseapp.com",
+    projectId: "mtgr-24718",
+    storageBucket: "mtgr-24718.firebasestorage.app",
+    messagingSenderId: "385919783070",
+    appId: "1:385919783070:web:64f2703ec8cc0fd1c5ab8f"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  const ownerInfo      = document.getElementById("ownerInfo");
+  const storeIdInput   = document.getElementById("storeIdInput");
+  const storeNameInput = document.getElementById("storeNameInput");
+  const storeWhatsInput= document.getElementById("storeWhatsInput");
+  const storeEmailInput= document.getElementById("storeEmailInput");
+  const storePassInput = document.getElementById("storePassInput");
+  const createStoreBtn = document.getElementById("createStoreBtn");
+  const createMsg      = document.getElementById("createMsg");
+  const storesTableWrap= document.getElementById("storesTableWrap");
+
+  (function askMaster(){
+    const code = prompt("ادخل كلمة سر صاحب المنصة:");
+    if(code !== MASTER_ADMIN_CODE){
+      alert("كلمة السر غير صحيحة، ما تقدر تدخل.");
+      document.body.innerHTML = "<h2 style='color:white;text-align:center;margin-top:40px;'>دخول مرفوض</h2>";
+    } else {
+      ownerInfo.textContent = "تم التحقق من صاحب المنصة ✅";
+      loadStores();
+    }
+  })();
+
+  function baseStoreLink(storeId){
+    const url = new URL(window.location.href);
+    // نفترض أن index.html موجود بنفس المجلد
+    url.pathname = url.pathname.replace("owner-admin.html", "index.html");
+    url.search = "?store=" + encodeURIComponent(storeId);
+    return url.toString();
+  }
+
+  createStoreBtn.addEventListener("click", async () => {
+    const id    = storeIdInput.value.trim();
+    const name  = storeNameInput.value.trim();
+    const whats = storeWhatsInput.value.trim();
+    const email = storeEmailInput.value.trim();
+    const pass  = storePassInput.value.trim();
+
+    createMsg.textContent = "";
+
+    if(!id || !email || !pass){
+      createMsg.textContent = "🔴 لازم تكتب Store ID + الإيميل + الباسورد على الأقل.";
+      return;
+    }
+    if(/\s/.test(id)){
+      createMsg.textContent = "🔴 Store ID بدون فراغات. استخدم - أو _ إذا تحب.";
+      return;
+    }
+
+    try{
+      const doc = await db.collection("stores").doc(id).get();
+      if(doc.exists){
+        createMsg.textContent = "⚠️ هذا المعرف مستخدم من قبل. جرّب اسم ثاني.";
+        return;
+      }
+
+      await db.collection("stores").doc(id).set({
+        name: name || id,
+        whatsapp: whats || null,
+        adminEmail: email,
+        adminPassword: pass,
+        active: true,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      const link = baseStoreLink(id);
+      createMsg.textContent = "✅ تم إنشاء المتجر. رابط المتجر: " + link;
+      storeIdInput.value = storeNameInput.value = storeWhatsInput.value = storeEmailInput.value = storePassInput.value = "";
+      loadStores();
+    }catch(e){
+      console.error(e);
+      createMsg.textContent = "حدث خطأ أثناء الإنشاء.";
+    }
+  });
+
+  function loadStores(){
+    db.collection("stores").orderBy("createdAt","desc").onSnapshot(snap=>{
+      if(snap.empty){
+        storesTableWrap.innerHTML = "<p class='small'>ماكو متاجر بعد.</p>";
+        return;
+      }
+      let html = "<table><thead><tr><th>المعرف</th><th>الاسم</th><th>الحالة</th><th>الرابط</th><th>تحكم</th></tr></thead><tbody>";
+      snap.forEach(doc=>{
+        const d = doc.data();
+        const link = baseStoreLink(doc.id);
+        html += `
+          <tr>
+            <td>${doc.id}</td>
+            <td>${d.name || "-"}</td>
+            <td>
+              <span class="badge ${d.active ? "badge-active":"badge-off"}">
+                ${d.active ? "شغال":"موقوف"}
+              </span>
+            </td>
+            <td><a class="link" href="${link}" target="_blank">${link}</a></td>
+            <td>
+              <button class="btn-outline" onclick="toggleStore('${doc.id}', ${d.active ? "true":"false"})">
+                ${d.active ? "إيقاف":"تشغيل"}
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+      html += "</tbody></table>";
+      storesTableWrap.innerHTML = html;
+    });
+  }
+
+  window.toggleStore = async function(storeId, isActive){
+    const confirmMsg = isActive ? "تريد توقّف هذا المتجر؟" : "تريد تشغّل هذا المتجر؟";
+    if(!confirm(confirmMsg)) return;
+    await db.collection("stores").doc(storeId).update({active: !isActive});
+  }
+</script>
+</body>
+</html>
