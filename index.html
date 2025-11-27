@@ -1,154 +1,492 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>الرومات الصوتية – شات أبو أمير</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <!-- أيقونات فاونت أويسوم -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- ملف التنسيقات -->
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <title>منصة المتاجر – ملف واحد</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Tahoma, Arial;
+      background:#f5f5f5;
+      color:#333;
+    }
+
+    header{
+      background:linear-gradient(90deg,#d32f2f,#f57c00);
+      color:#fff;
+      padding:15px;
+      font-size:20px;
+      font-weight:bold;
+      text-align:center;
+    }
+
+    .top{
+      background:#fff;
+      padding:12px;
+      box-shadow:0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .top-inner{
+      max-width:1100px;
+      margin:auto;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+    }
+
+    input{
+      padding:8px;
+      border-radius:6px;
+      border:1px solid #ccc;
+      font-size:14px;
+    }
+
+    button{
+      padding:8px 12px;
+      border:none;
+      border-radius:6px;
+      font-size:14px;
+      cursor:pointer;
+    }
+
+    .btn-primary{background:#1976d2;color:#fff;}
+    .btn-admin{
+      background:#111;
+      color:#fff;
+      position:fixed;
+      bottom:15px;
+      left:15px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.4);
+    }
+
+    .container{
+      max-width:1100px;
+      margin:15px auto;
+      padding:10px;
+    }
+
+    .msg{
+      background:#fff3cd;
+      padding:10px;
+      border-radius:8px;
+      margin-bottom:10px;
+      border:1px solid #ffeeba;
+      color:#856404;
+      font-size:14px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:15px;
+    }
+
+    .card{
+      background:#fff;
+      border-radius:10px;
+      overflow:hidden;
+      box-shadow:0 3px 6px rgba(0,0,0,0.15);
+      display:flex;
+      flex-direction:column;
+    }
+
+    .card img{
+      width:100%;
+      height:170px;
+      object-fit:cover;
+      background:#ddd;
+    }
+
+    .card-body{
+      padding:10px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .card-title{font-weight:bold;}
+    .card-price{color:#d32f2f;font-weight:bold;}
+
+    .wa{
+      background:#25D366;
+      color:#fff;
+      text-align:center;
+      padding:6px;
+      border-radius:6px;
+      text-decoration:none;
+      display:block;
+      margin-top:auto;
+    }
+
+    .del{
+      background:#b71c1c;
+      color:#fff;
+      text-align:center;
+      padding:6px;
+      border-radius:6px;
+      cursor:pointer;
+      margin-top:6px;
+    }
+
+    /* المشرف */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.6);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:999;
+    }
+
+    .panel{
+      background:#fff;
+      padding:15px;
+      border-radius:10px;
+      width:90%;
+      max-width:380px;
+    }
+
+    .panel input, .panel textarea{
+      width:100%;
+      margin-bottom:10px;
+      padding:7px;
+      border-radius:6px;
+      border:1px solid #ccc;
+      font-size:13px;
+    }
+
+    textarea{min-height:60px;resize:vertical;}
+
+    .small{
+      font-size:11px;
+      color:#444;
+      word-break:break-all;
+    }
+  </style>
 </head>
+
 <body>
-<div class="app">
 
-  <!-- الهيدر -->
-  <div class="header">
-    <div class="header-left">
-      <button class="back-btn" onclick="handleBack()">
-        <i class="fa-solid fa-arrow-right"></i>
-      </button>
-      <div>
-        <div class="header-title">الغرف الصوتية</div>
-        <div class="header-sub">ستايل كلوب هاوس – شات أبو أمير 🎧</div>
-      </div>
-    </div>
-    <i class="fa-solid fa-headset"></i>
-  </div>
+<header>منصة المتاجر – ملف واحد يعطي روابط لكل متجر</header>
 
-  <!-- شاشة قائمة الرومات -->
-  <div id="roomsScreen" class="screen active">
-    <div class="rooms-screen-body">
-      <button class="create-room-btn" onclick="createRoomPrompt()">
-        <span>
-          <i class="fa-solid fa-plus"></i>
-          إنشاء روم صوتي جديد
-        </span>
-        <i class="fa-solid fa-headphones"></i>
-      </button>
-
-      <div class="filters-row" id="filtersRow">
-        <button class="filter-chip active" data-filter="all" onclick="setFilter(this)">الكل</button>
-        <button class="filter-chip" data-filter="t3arof" onclick="setFilter(this)">تعارف</button>
-        <button class="filter-chip" data-filter="games" onclick="setFilter(this)">ألعاب</button>
-        <button class="filter-chip" data-filter="swalif" onclick="setFilter(this)">سوالف</button>
-        <button class="filter-chip" data-filter="friends" onclick="setFilter(this)">صداقة</button>
-        <button class="filter-chip" data-filter="notify" onclick="setFilter(this)">إشعارات</button>
-        <button class="filter-chip" data-filter="funny" onclick="setFilter(this)">ضحك</button>
-      </div>
-
-      <div class="section-title">الرومات المتاحة الآن</div>
-      <div id="roomsList"></div>
-    </div>
-  </div>
-
-  <!-- شاشة داخل الروم -->
-  <div id="roomInnerScreen" class="screen">
-    <div class="room-inner">
-      <div class="room-inner-header">
-        <div class="room-inner-title" id="innerRoomName">عنوان الروم</div>
-        <div class="room-inner-sub" id="innerRoomSub">وصف الروم</div>
-        <div class="pill" id="innerRoomMeta">
-          <i class="fa-solid fa-lock-open"></i>
-          <span>عام • بدون رمز</span>
-        </div>
-      </div>
-
-      <div class="room-inner-body">
-        <!-- 5 مايكات فوق -->
-        <div class="main-speakers-block">
-          <div class="block-label">🎤 المتحدثين الرئيسيين</div>
-          <div class="mics-row" id="topMicsRow"></div>
-        </div>
-
-        <!-- 5 مايكات جوه -->
-        <div class="guest-speakers-block">
-          <div class="block-label">🎧 الضيوف / المشاركين</div>
-          <div class="mics-row" id="bottomMicsRow"></div>
-        </div>
-
-        <!-- دردشة الروم -->
-        <div class="room-chat-block">
-          <div class="block-label">💬 دردشة الروم (تظهر للجميع)</div>
-          <div class="room-chat-messages" id="roomChatMessages"></div>
-          <div class="room-chat-input">
-            <input type="text" id="roomChatInput" placeholder="اكتب رسالة للجميع...">
-            <button onclick="sendRoomChatMessage()">
-              <i class="fa-solid fa-paper-plane"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="room-controls">
-        <div class="top-controls-row">
-          <div class="mini-stats">
-            <div class="mini-stat">
-              <i class="fa-solid fa-user"></i>
-              <span id="statUsers">0 متواجد</span>
-            </div>
-            <div class="mini-stat">
-              <i class="fa-solid fa-clock"></i>
-              <span>روم تجريبي (بدون صوت حقيقي)</span>
-            </div>
-          </div>
-          <div style="font-size:11px;color:#9ca3af;">
-            <i class="fa-solid fa-circle-info"></i>
-            الصوت نضيفه لاحقاً
-          </div>
-        </div>
-
-        <div class="buttons-row">
-          <button class="round-btn small" title="رفع اليد">
-            <i class="fa-solid fa-hand-paper"></i>
-          </button>
-          <button id="micBtn" class="round-btn mic-muted" title="تشغيل/إيقاف المايك" onclick="toggleMic()">
-            <i class="fa-solid fa-microphone-slash"></i>
-          </button>
-          <button class="round-btn leave" title="مغادرة الروم" onclick="leaveRoom()">
-            <i class="fa-solid fa-door-open"></i>
-          </button>
-          <button class="round-btn small" title="شات الروم (تصميم فقط)">
-            <i class="fa-solid fa-message"></i>
-          </button>
-          <button class="round-btn small" title="إعدادات (لاحقاً)">
-            <i class="fa-solid fa-gear"></i>
-          </button>
-        </div>
-
-        <div class="bottom-hint">
-          هذا التصميم فقط، بدون صوت حقيقي. لاحقاً نربطه بسيرفر صوت أو WebRTC.
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<!-- مودال المراسلة الخاصة -->
-<div id="dmModal" class="dm-modal">
-  <div class="dm-box">
-    <div class="dm-title">مراسلة خاصة</div>
-    <div class="dm-user" id="dmUserName">اسم المستخدم</div>
-    <textarea id="dmMessageInput" placeholder="اكتب رسالتك هنا (تصميم فقط، بدون إرسال حقيقي)..."></textarea>
-    <div class="dm-actions">
-      <button onclick="closeDM()">إغلاق</button>
-      <button class="dm-send-btn" onclick="sendDMMessage()">إرسال (شكلي)</button>
-    </div>
+<!-- شريط فوق لاختيار المتجر -->
+<div class="top">
+  <div class="top-inner">
+    <input id="storeInput" placeholder="اكتب اسم المتجر بالإنجليزي مثال: basim-shop">
+    <button class="btn-primary" id="loadBtn">تحميل المتجر</button>
+    <span style="font-size:12px;color:#666;">
+      تقدر تدخل مباشرة بالرابط: ?store=اسم_المتجر
+    </span>
   </div>
 </div>
 
-<!-- ملف الجافاسكربت -->
-<script src="app.js"></script>
+<div class="container">
+  <div id="info"></div>
+  <div id="products" class="grid"></div>
+</div>
+
+<!-- زر المشرف -->
+<button class="btn-admin" id="adminBtn">مشرف</button>
+
+<!-- لوحة المشرف -->
+<div class="overlay" id="overlay">
+  <div class="panel">
+    <h3 id="panelTitle">إضافة منتج</h3>
+    <div class="small" id="panelStore"></div>
+    <div class="small" id="panelLink"></div>
+    <hr>
+
+    <input id="pTitle" placeholder="اسم المنتج">
+    <textarea id="pDesc" placeholder="وصف المنتج"></textarea>
+    <input id="pPrice" placeholder="السعر (مثال: 25,000 د.ع)">
+    <input id="pImage" placeholder="رابط الصورة http://">
+    <input id="pWhats" placeholder="رقم الواتساب 9647XXXXXXXXX">
+
+    <button class="btn-primary" id="saveProduct">حفظ المنتج</button>
+    <button class="btn-primary" style="background:#777;margin-top:6px" id="closePanel">إغلاق</button>
+  </div>
+</div>
+
+<script>
+  // قاعدة بيانات بسيطة داخل المتصفح
+  // الشكل:
+  // {
+  //   "basim-shop": { admin: "1234", products: [ {...}, ... ] },
+  //   "telesat":    { admin: "9999", products: [ ... ] }
+  // }
+
+  let DB = {};
+  let currentStore = null;
+  const LS_KEY = "MULTI_STORE_DB";
+
+  const storeInput   = document.getElementById("storeInput");
+  const loadBtn      = document.getElementById("loadBtn");
+  const infoBox      = document.getElementById("info");
+  const productsBox  = document.getElementById("products");
+
+  const adminBtn     = document.getElementById("adminBtn");
+  const overlay      = document.getElementById("overlay");
+  const panelTitle   = document.getElementById("panelTitle");
+  const panelStore   = document.getElementById("panelStore");
+  const panelLink    = document.getElementById("panelLink");
+  const closePanel   = document.getElementById("closePanel");
+  const saveProduct  = document.getElementById("saveProduct");
+
+  const pTitle = document.getElementById("pTitle");
+  const pDesc  = document.getElementById("pDesc");
+  const pPrice = document.getElementById("pPrice");
+  const pImage = document.getElementById("pImage");
+  const pWhats = document.getElementById("pWhats");
+
+  // تحميل قاعدة البيانات من localStorage
+  function loadDB() {
+    try {
+      DB = JSON.parse(localStorage.getItem(LS_KEY)) || {};
+    } catch (e) {
+      DB = {};
+    }
+  }
+
+  function saveDB() {
+    localStorage.setItem(LS_KEY, JSON.stringify(DB));
+  }
+
+  // قراءة اسم المتجر من الرابط ?store=...
+  function getStoreFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const s = params.get("store");
+    return s ? s.trim() : null;
+  }
+
+  // بناء رابط المتجر الكامل
+  function buildStoreLink(id) {
+    const base = window.location.origin + window.location.pathname;
+    return base + "?store=" + encodeURIComponent(id);
+  }
+
+  // فتح متجر معيّن
+  function openStore(id) {
+    currentStore = id;
+    storeInput.value = id || "";
+    renderStoreInfo();
+    renderProducts();
+  }
+
+  function renderStoreInfo() {
+    if (!currentStore) {
+      infoBox.innerHTML = "";
+      return;
+    }
+
+    if (!DB[currentStore]) {
+      infoBox.innerHTML =
+        "<div class='msg'>هذا المتجر غير موجود بعد. المشرف يقدر ينشئه من زر (مشرف).</div>";
+    } else {
+      infoBox.innerHTML =
+        "<div class='msg' style='background:#eaf7ff;border-color:#90caf9;color:#0277bd'>" +
+        "أنت الآن في متجر: <b>" + currentStore + "</b><br>" +
+        "رابط هذا المتجر: <br><span style='font-size:11px;word-break:break-all;'>" +
+        buildStoreLink(currentStore) + "</span></div>";
+    }
+  }
+
+  // عرض المنتجات
+  function renderProducts() {
+    productsBox.innerHTML = "";
+
+    if (!currentStore) {
+      productsBox.innerHTML =
+        "<div class='msg'>اكتب اسم المتجر فوق أو ادخل بالرابط ?store=اسم_المتجر</div>";
+      return;
+    }
+
+    const store = DB[currentStore];
+    if (!store || !store.products || store.products.length === 0) {
+      productsBox.innerHTML = "<div class='msg'>لا توجد منتجات في هذا المتجر حتى الآن.</div>";
+      return;
+    }
+
+    store.products.forEach((p, i) => {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const img = document.createElement("img");
+      img.src = p.image || "";
+      img.onerror = function () {
+        this.src = "https://via.placeholder.com/300x200?text=No+Image";
+      };
+      card.appendChild(img);
+
+      const body = document.createElement("div");
+      body.className = "card-body";
+
+      const titleDiv = document.createElement("div");
+      titleDiv.className = "card-title";
+      titleDiv.textContent = p.title || "منتج بدون اسم";
+      body.appendChild(titleDiv);
+
+      if (p.desc) {
+        const descDiv = document.createElement("div");
+        descDiv.textContent = p.desc;
+        body.appendChild(descDiv);
+      }
+
+      if (p.price) {
+        const priceDiv = document.createElement("div");
+        priceDiv.className = "card-price";
+        priceDiv.textContent = p.price;
+        body.appendChild(priceDiv);
+      }
+
+      if (p.whats) {
+        const wa = document.createElement("a");
+        const clean = p.whats.replace(/\D/g, "");
+        wa.href = "https://wa.me/" + clean +
+          "?text=" + encodeURIComponent("أريد هذا المنتج من متجر " + currentStore + ": " + (p.title || ""));
+        wa.target = "_blank";
+        wa.className = "wa";
+        wa.textContent = "طلب عبر واتساب";
+        body.appendChild(wa);
+      }
+
+      const del = document.createElement("div");
+      del.className = "del";
+      del.textContent = "حذف المنتج";
+      del.onclick = function () {
+        deleteProduct(i);
+      };
+      body.appendChild(del);
+
+      card.appendChild(body);
+      productsBox.appendChild(card);
+    });
+  }
+
+  // حذف منتج
+  function deleteProduct(index) {
+    if (!currentStore) return;
+    if (!confirm("تحب تحذف هذا المنتج؟")) return;
+    DB[currentStore].products.splice(index, 1);
+    saveDB();
+    renderProducts();
+  }
+
+  // زر تحميل المتجر
+  loadBtn.addEventListener("click", function () {
+    const id = storeInput.value.trim();
+    if (!id) {
+      alert("اكتب اسم المتجر.");
+      return;
+    }
+    openStore(id);
+  });
+
+  // زر المشرف
+  adminBtn.addEventListener("click", function () {
+    let id = currentStore;
+
+    if (!id) {
+      id = prompt("ادخل اسم المتجر (بالإنجليزي بدون فراغات):");
+      if (id === null) return;
+      id = id.trim();
+      if (!id) {
+        alert("اسم المتجر لا يجوز يكون فارغ.");
+        return;
+      }
+    }
+
+    // إذا المتجر جديد
+    if (!DB[id]) {
+      const create = confirm("هذا المتجر غير موجود، تريد إنشاء متجر جديد بهذا الاسم؟");
+      if (!create) return;
+
+      let code = prompt("ضع رمز مشرف للمتجر (مثال: 1234):");
+      if (code === null) return;
+      code = code.trim();
+      if (!code) {
+        alert("رمز المشرف لا يجوز يكون فارغ.");
+        return;
+      }
+
+      DB[id] = {
+        admin: code,
+        products: []
+      };
+      saveDB();
+      currentStore = id;
+      alert("تم إنشاء المتجر، لا تنسَ رمز المشرف: " + code);
+    } else {
+      // متجر موجود: تحقق من رمز المشرف
+      const code = prompt("ادخل رمز المشرف لهذا المتجر:");
+      if (code === null) return;
+
+      if (code !== DB[id].admin) {
+        alert("رمز المشرف غير صحيح.");
+        return;
+      }
+      currentStore = id;
+    }
+
+    // إعداد لوحة المشرف
+    panelTitle.textContent = "لوحة المشرف – متجر: " + currentStore;
+    panelStore.innerHTML = "اسم المتجر: <b>" + currentStore + "</b>";
+    panelLink.textContent = "رابط متجرك: " + buildStoreLink(currentStore);
+    overlay.style.display = "flex";
+    renderStoreInfo();
+    renderProducts();
+  });
+
+  // إغلاق لوحة المشرف
+  closePanel.addEventListener("click", function () {
+    overlay.style.display = "none";
+  });
+
+  // حفظ منتج جديد
+  saveProduct.addEventListener("click", function () {
+    if (!currentStore) {
+      alert("لا يوجد متجر محدد.");
+      return;
+    }
+    const store = DB[currentStore];
+    if (!store) {
+      alert("المتجر غير موجود.");
+      return;
+    }
+
+    const product = {
+      title: pTitle.value.trim(),
+      desc:  pDesc.value.trim(),
+      price: pPrice.value.trim(),
+      image: pImage.value.trim(),
+      whats: pWhats.value.trim()
+    };
+
+    if (!product.title) {
+      alert("اكتب اسم المنتج.");
+      return;
+    }
+
+    store.products.push(product);
+    saveDB();
+    alert("تم حفظ المنتج ✅");
+    pTitle.value = pDesc.value = pPrice.value = pImage.value = pWhats.value = "";
+    renderProducts();
+  });
+
+  // تحميل البيانات عند فتح الصفحة
+  loadDB();
+  const urlStore = getStoreFromURL();
+  if (urlStore) {
+    openStore(urlStore);
+  } else {
+    renderProducts();
+  }
+</script>
+
 </body>
 </html>
