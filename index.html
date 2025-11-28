@@ -202,7 +202,6 @@
     </div>
   </main>
 
-  <!-- مودال تفاصيل المنتج + زر واتساب -->
   <div class="modal-backdrop" id="productDetailModal">
     <div class="modal">
       <img id="detailImg" class="product-detail-img" src="" />
@@ -218,7 +217,6 @@
     </div>
   </div>
 
-  <!-- مودال إتمام الطلب -->
   <div class="modal-backdrop" id="checkoutModal">
     <div class="modal">
       <h4>إتمام الطلب</h4>
@@ -253,7 +251,6 @@
     </div>
   </div>
 
-  <!-- مودال تتبع الطلب -->
   <div class="modal-backdrop" id="trackingModal">
     <div class="modal">
       <h4>تتبع الطلب</h4>
@@ -264,7 +261,6 @@
     </div>
   </div>
 
-  <!-- مودال دخول الأدمن (إيميل + رمز) -->
   <div class="modal-backdrop" id="adminModal">
     <div class="modal">
       <h4>دخول الأدمن</h4>
@@ -803,13 +799,21 @@
       document.getElementById("adminModal").classList.remove("open")
     );
 
-    document.getElementById("adminLoginBtn").addEventListener("click", () => {
+    // 💡 **التعديل يبدأ هنا**
+    document.getElementById("adminLoginBtn").addEventListener("click", async () => {
       if (!storeMeta) {
-        showToast("بيانات المتجر لم تُحمَّل بعد.", "error");
-        return;
+        showToast("جاري تحميل بيانات المتجر... يرجى الانتظار", "error");
+        // محاولة تحميل البيانات مرة أخرى وانتظار النتيجة
+        await loadStoreMeta(); 
+        if (!storeMeta) {
+            showToast("تعذر تحميل بيانات المتجر، تحقق من الرابط.", "error");
+            return;
+        }
       }
+      
       const email = adminEmailInput.value.trim();
       const pass  = adminPasswordInput.value.trim();
+      
       if (email === storeMeta.adminEmail && pass === storeMeta.adminPassword) {
         isAdmin = true;
         localStorage.setItem(STORAGE_PREFIX + 'isAdmin', 'true');
@@ -820,6 +824,7 @@
         showToast("البريد أو الرمز غير صحيح", "error");
       }
     });
+    // 💡 **التعديل ينتهي هنا**
 
     window.logoutAdmin = function() {
       if (confirm("خروج الأدمن؟")) {
